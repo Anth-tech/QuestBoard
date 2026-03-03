@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		<div style="margin-left: 20px; margin-right: 20px; border: solid 1px black; padding: 20px;">
-			<h2 style="text-align: center;">Questboard Use Cases and Scenarios</h2>
+			<h2 style="text-align: center;">QuestBoard Use Cases and Scenarios</h2>
 			<h3>Team members:</h3>
 			<ul>
 				<li>Anthony Chapman</li>
@@ -14,7 +14,7 @@
 				<li>Mason Allen</li>
 			</ul>
 			<!--
-				Scenarios should include:
+				Scenarios should describe how user may use app and should include:
 				* A desc. of starting situation
 				* A desc. of normal flow of events
 				* A desc. of what can go wrong
@@ -27,7 +27,8 @@
 					<strong>Name: Creating a New Team</strong>
 					<br>
 					<strong>Description:</strong>
-					<p> 	The process starts when the user presses the "Create Team" button. They will be prompted
+					<p>
+							The process starts when the user presses the "Create Team" button. They will be prompted
 						to fill fields relating to the team's name and purpose. Once the user submits this form, the application will
 						ensure all necessary fields are filled and create new instance of a team within the database; 
 						if the form is not filled, it will instead display an error message stating what is missing.
@@ -40,7 +41,8 @@
 					<strong>Name: Creating and Assigning Tasks</strong>
 					<br>
 					<strong>Description:</strong>
-					<p>		Any user who is designated as the project manager of the relevant project, or another role granted 
+					<p>
+							Any user who is designated as the project manager of the relevant project, or another role granted
 						sufficient permissions, is able to see the "Create Task" button. Upon button press a form is presented 
 						with the fields necessary for task creation: task name, description, priority level, completion state, 
 						and initial team members. The task name is the only field that is an absolute requirment. When the user
@@ -55,10 +57,11 @@
 					<strong>Name: Updating Task Progress</strong>
 					<br>
 					<strong>Description:</strong>
-					<p>		Any user with relevant authority will be able to see the "options" button for a task from the dashboard.
+					<p>
+							Any user with relevant authority will be able to see the "options" button for a task from the dashboard.
 						Clicking on this button will open a menu containing all the information pertaining to the task that the user
 						is able to manipulate. The project manager and users granted the authority to do so can edit all facets of a task,
-						while any user who is assigned to the task will be able to atleast view edit the task progress unless this 
+						while any user who is assigned to the task will be able to at least view edit the task progress unless this
 						authority has been stripped via a special role. By changing which radio button is selected and submitting the
 						form, the user will be able to update the task's progress. This has the potential to fail if the user has the ability
 						to edit multiple fields and provides an invalid entry to one of them.
@@ -69,21 +72,47 @@
 					<strong>Name: Team Communication Using Discussion Boards</strong>
 					<br>
 					<strong>Description:</strong>
-					<p>Description Here</p>
+					<p>
+							Several team members find a design issue that affects multiple tasks and multiple roles.
+						One contributor goes ahead and creates a post on the common discussion board explaining the
+						problem and asking for solutions. Other team members then reply with feedback and alternative
+						approaches, allowing the team to plan a solution accordingly.
+
+							For more sensitive topics, the project manager creates a private discussion board, granting
+						access only users with relevant roles to view the post. If a user without permission attempts to
+						view the private board, the system blocks their access and returns them to the dashboard. At the
+						end of discussion, messages can be locked by the project manager, and the system stores the
+						messages for later reference.
+					</p>
 					<br>
 				</li>
 				<li>
 					<strong>Name: Searching and Filtering Tasks</strong>
 					<br>
 					<strong>Description:</strong>
-					<p>Description Here</p>
+					<p>
+							A team member wants to locate all high-priority tasks that are incomplete. They use the
+						search bar on the dashboard and apply filters for task status, priority, and assignment, which
+						the system returns a list of the tasks that match the search criteria.
+
+							However, another team member decides to search for low-priority, optional tasks. However, no
+						tasks match their desired priority level, so the system informs them no matching results were
+						found and allows them to adjust their filters. Once the system locates the desired tasks, the
+						team member can open them directly from the filtered list.
+					</p>
 					<br>
 				</li>
 				<li>
 					<strong>Name: Viewing Progress and Deadlines</strong>
 					<br>
 					<strong>Description:</strong>
-					<p>Description Here</p>
+					<p>
+							The project manager opens the dashboard to check the team's progress and the total completion
+						of the project. A weighted progress bar shows the percentage of completed tasks, and the calendar
+						highlights upcoming deadlines for future tasks. Using this information, the project manager
+						decides to reassign responsibilities of users and/or change the priorities of tasks, adjusting
+						the requirements of the project on the fly as progress is made.
+					</p>
 					<br>
 				</li>
 				<li>
