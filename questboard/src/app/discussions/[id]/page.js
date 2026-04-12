@@ -1,8 +1,11 @@
 "use client";
+import { use } from "react";
 
 export default function DiscussionDetails({ params }) {
+  const { id } = use(params);
+
   const post = {
-    id: params.id,
+    id: id,
     title: "Placeholder Discussion Title",
     content:
       "This page is very much a placeholder for until we actually get the backend set up",
