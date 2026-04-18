@@ -39,3 +39,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#IDE-Specific files
+.vscode/
+.idea/
+
+# Intellij IDE files
+# Default ignored files
+/shelf/
+/workspace.xml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
