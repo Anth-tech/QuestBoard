@@ -33,7 +33,7 @@ export default function DiscussionPage() {
             <span>{post.title}</span>
 
             <span style={styles.commentBadge}>
-              {post.commentCount} 💬
+              {post.commentCount} 
             </span>
           </Link>
         ))}
