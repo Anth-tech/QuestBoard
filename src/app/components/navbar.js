@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import LoginButton from "./loginButton";
 
 
 export default function NavBar({ projectName = "Project A1" }) {//optional name for now for placeholders
@@ -34,7 +35,7 @@ export default function NavBar({ projectName = "Project A1" }) {//optional name 
           <div style={styles.avatar}>U</div>
           <span>Profile</span>
         </div>
-
+        <LoginButton/>
         <Link href="/settings" style={styles.link}>
           ⚙️ Settings
         </Link>
