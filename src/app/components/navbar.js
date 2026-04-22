@@ -16,7 +16,7 @@ export default function NavBar({ projectName = "Project A1" }) {
 
     getUser();
 
-    // Listen for auth changes (login/logout updates instantly)
+    // Listen for auth changes
     const { data: listener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
@@ -24,16 +24,21 @@ export default function NavBar({ projectName = "Project A1" }) {
     );
 
     return () => {
-      listener.subscription.unsubscribe();
+      listener?.subscription?.unsubscribe?.();
     };
   }, []);
 
-  // Google login
+  // Google login (FIXED for deployment safety)
   const signInWithGoogle = async () => {
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : process.env.NEXT_PUBLIC_SITE_URL;
+
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${origin}/auth/callback`,
       },
     });
   };
