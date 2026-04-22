@@ -1,20 +1,28 @@
-"use client";
+import { NextResponse } from "next/server"
+import { createClient } from "@/lib/supabase/server"
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+export async function GET(request) {
+  const { searchParams, origin } = new URL(request.url)
 
-export default function AuthCallback() {
-  const router = useRouter();
+  const code = searchParams.get("code")
+  const next = request.cookies.get("redirectAfterLogin")?.value || "/"
+  const safeNext = next.startsWith("/") ? next : "/"
 
-  useEffect(() => {
-    const handle = async () => {
-      await supabase.auth.getSession();
-      router.push("/");
-    };
+  if (!code) {
+    return NextResponse.redirect(`${origin}/login?error=missing_code`)
+  }
 
-    handle();
-  }, [router]);
+  const supabase = await createClient()
+  const { error } = await supabase.auth.exchangeCodeForSession(code)
 
-  return <p>Signing you in...</p>;
+  if (error) {
+    return NextResponse.redirect(`${origin}/login?error=code_exchange_failed`)
+  }
+
+  const destination = new URL(safeNext, origin)
+
+  const response = NextResponse.redirect(destination)
+  response.cookies.delete("redirectAfterLogin")
+
+  return response
 }
