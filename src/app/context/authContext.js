@@ -12,30 +12,24 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // fetch user and profile
+  //fetch user and profile
   const fetchUser = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
 
-      if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("display_name, avatar_url")
-          .eq("id", user.id)
-          .single();
+    if (user) {
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, avatar_url")
+        .eq("id", user.id)
+        .single();
 
-        setProfile(data);
-      } else {
-        setProfile(null);
-      }
-    } catch (err) {
-      console.error("Auth fetch error:", err);
-      setUser(null);
+      setProfile(data);
+    } else {
       setProfile(null);
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -47,23 +41,16 @@ export function AuthProvider({ children }) {
         setUser(user);
 
         if (user) {
-          try {
-            const { data } = await supabase
-              .from("profiles")
-              .select("display_name, avatar_url")
-              .eq("id", user.id)
-              .single();
+          const { data } = await supabase
+            .from("profiles")
+            .select("display_name, avatar_url")
+            .eq("id", user.id)
+            .single();
 
-            setProfile(data);
-          } catch (err) {
-            console.error("Profile fetch error:", err);
-            setProfile(null);
-          }
+          setProfile(data);
         } else {
           setProfile(null);
         }
-
-        setLoading(false);
       });
 
     return () => subscription.unsubscribe();
@@ -75,6 +62,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
 
 export function useAuth() {
   return useContext(AuthContext);
