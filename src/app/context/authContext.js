@@ -31,6 +31,17 @@ export function AuthProvider({ children }) {
     setProfile(data ?? null);
   }
 
+  async function logout() {
+    setLoading(true);
+
+    await supabase.auth.signOut();
+
+    setUser(null);
+    setProfile(null);
+
+    setLoading(false);
+  }
+
   useEffect(() => {
     let mounted = true;
 
@@ -73,7 +84,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider
+      value={{ user, profile, loading, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
