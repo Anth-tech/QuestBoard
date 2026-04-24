@@ -29,7 +29,7 @@ export default function NavBar({ projectName = "Project A1" }) {//optional name 
       async(_event, session) => {
         setUser(session?.user || null);
         if (session?.user) {
-          const { data } = await supabase.from("profiles").select("display_name").eq("id", session.user.id).single();
+          const { data } = await supabase.from("profiles").select("display_name", "avatar_url").eq("id", session.user.id).single();
           setProfile(data);
         } else {
           setProfile(null);
@@ -41,7 +41,7 @@ export default function NavBar({ projectName = "Project A1" }) {//optional name 
   }, []);
 
   // gets avatar from user metadata, display name from profile or user metadata, and falls back to "User" if neither is available
-  const avatarUrl = user?.user_metadata?.avatar_url;
+  const avatarUrl = profile?.avatar_url ?? user?.user_metadata?.avatar_url;
   const displayName = profile?.display_name ?? user?.user_metadata?.full_name ?? "User";
   const initials = displayName.charAt(0).toUpperCase();
 
