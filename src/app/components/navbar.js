@@ -8,17 +8,23 @@ import { useAuth } from "../context/authContext";
 export default function NavBar({ projectName = "Project A1" }) {
   const { user, profile, loading } = useAuth();
 
-  const displayName =
-    profile?.display_name ??
-    user?.user_metadata?.full_name ??
-    "User";
+  let displayName = "User";
+  let avatarUrl = null;
+  let initials = "U";
 
-  const avatarUrl =
-    profile?.avatar_url ??
-    user?.user_metadata?.avatar_url;
+  if (!loading) {
+    displayName =
+      profile?.display_name ??
+      user?.user_metadata?.full_name ??
+      "User";
 
-  const safeDisplayName = displayName || "User";
-  const initials = safeDisplayName.charAt(0).toUpperCase();
+    avatarUrl =
+      profile?.avatar_url ??
+      user?.user_metadata?.avatar_url;
+
+    const safeDisplayName = displayName || "User";
+    initials = safeDisplayName.charAt(0).toUpperCase();
+  }
 
   return (
     <aside style={styles.sidebar}>
