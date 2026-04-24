@@ -1,15 +1,18 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/navbar";
+import { AuthProvider } from "./context/authContext";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <NavBar/>
-        <main style={{ marginLeft: "250px", padding: "20px" }}>
-          {children}
-        </main>
+        <AuthProvider>
+          <NavBar/>
+          <main style={{ marginLeft: "250px", padding: "20px" }}>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
