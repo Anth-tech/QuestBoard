@@ -18,11 +18,15 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select("display_name, avatar_url")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
+
+    if (error) {
+      console.warn("Profile fetch error:", error.message);
+    }
 
     setProfile(data ?? null);
   }
@@ -33,7 +37,9 @@ export function AuthProvider({ children }) {
     async function init() {
       setLoading(true);
 
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!mounted) return;
 
@@ -45,15 +51,20 @@ export function AuthProvider({ children }) {
 
     init();
 
-    const { data: { subscription } } =
-      supabase.auth.onAuthStateChange(async (_event, session) => {
-        const nextUser = session?.user ?? null;
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
 
-        setUser(nextUser);
-        await loadProfile(nextUser?.id);
+      setLoading(true);
 
-        setLoading(false);
-      });
+      const nextUser = session?.user ?? null;
+
+      setUser(nextUser);
+      await loadProfile(nextUser?.id);
+
+      if (mounted) setLoading(false);
+    });
 
     return () => {
       mounted = false;
