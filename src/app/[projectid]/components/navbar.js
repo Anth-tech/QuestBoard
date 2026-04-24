@@ -79,13 +79,13 @@ export default function NavBar() {
         </div>
 
         <nav style={styles.nav}>
-          <Link href={`/${params.projectid}/charter`} style={styles.link}>
+          <Link href={`/${params.projectid??""}/charter`} style={styles.link}>
             Project Charter
           </Link>
-          <Link href={`/${params.projectid}/tasks`} style={styles.link}>
+          <Link href={`/${params.projectid??""}/tasks`} style={styles.link}>
             Tasks
           </Link>
-          <Link href={`/${params.projectid}/discussions`} style={styles.link}>
+          <Link href={`/${params.projectid??""}/discussions`} style={styles.link}>
             Discussion Boards
           </Link>
         </nav>
