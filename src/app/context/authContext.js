@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/lib/client";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const supabase = createClient();
@@ -12,48 +12,53 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  //fetch user and profile
-  const fetchUser = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-
-    if (user) {
-      const { data } = await supabase
-        .from("profiles")
-        .select("display_name, avatar_url")
-        .eq("id", user.id)
-        .single();
-
-      setProfile(data);
-    } else {
+  async function loadProfile(userId) {
+    if (!userId) {
       setProfile(null);
+      return;
     }
 
-    setLoading(false);
-  };
+    const { data } = await supabase
+      .from("profiles")
+      .select("display_name, avatar_url")
+      .eq("id", userId)
+      .single();
+
+    setProfile(data ?? null);
+  }
 
   useEffect(() => {
-    fetchUser();
+    let mounted = true;
+
+    async function init() {
+      setLoading(true);
+
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!mounted) return;
+
+      setUser(user ?? null);
+      await loadProfile(user?.id);
+
+      if (mounted) setLoading(false);
+    }
+
+    init();
 
     const { data: { subscription } } =
       supabase.auth.onAuthStateChange(async (_event, session) => {
-        const user = session?.user ?? null;
-        setUser(user);
+        const nextUser = session?.user ?? null;
 
-        if (user) {
-          const { data } = await supabase
-            .from("profiles")
-            .select("display_name, avatar_url")
-            .eq("id", user.id)
-            .single();
+        setUser(nextUser);
+        await loadProfile(nextUser?.id);
 
-          setProfile(data);
-        } else {
-          setProfile(null);
-        }
+        setLoading(false);
       });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
@@ -62,7 +67,6 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
 
 export function useAuth() {
   return useContext(AuthContext);
