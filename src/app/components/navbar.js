@@ -11,9 +11,9 @@ export default function NavBar({ projectName = "Project A1" }) {//optional name 
   if (loading) return null;
 
   // gets avatar from user metadata, display name from profile or user metadata, and falls back to "User" if neither is available
-  const avatarUrl = profile?.avatar_url ?? user?.user_metadata?.avatar_url;
+  const avatarUrl = profile?.avatar_url ?? user?.user_metadata?.avatar_url ?? null;
   const displayName = profile?.display_name ?? user?.user_metadata?.full_name ?? "User";
-  const initials = displayName.charAt(0).toUpperCase();
+  const initials = displayName.charAt(0).toUpperCase() ?? "";
 
   return (
     <aside style={styles.sidebar}>
