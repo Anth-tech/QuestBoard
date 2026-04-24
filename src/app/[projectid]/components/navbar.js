@@ -79,15 +79,16 @@ export default function NavBar() {
         </div>
 
         <nav style={styles.nav}>
-          <Link href="/charter" style={styles.link}>
+          <Link href={buildLink("charter")} style={styles.link}>
             Project Charter
           </Link>
-          <Link href="/tasks" style={styles.link}>
+          <Link href={buildLink("tasks")} style={styles.link}>
             Tasks
           </Link>
-          <Link href="/discussions" style={styles.link}>
+          <Link href={buildLink("discussions")} style={styles.link}>
             Discussion Boards
           </Link>
+
         </nav>
       </div>
 
