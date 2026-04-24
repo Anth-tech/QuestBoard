@@ -5,34 +5,19 @@ import LoginButton from "./loginButton";
 import LogoutButton from "./logoutButton";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/client.js";
-import { useParams } from "next/navigation";
 
-export default function NavBar() {
+export default function NavBar({ projectName = "Project A1" }) {//optional name for now for placeholders
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const supabase = createClient();
 
-  const params = useParams();
-  const projectid = params?.projectid;
-
-  const projectName =
-    typeof projectid === "string" && projectid.trim() !== ""
-      ? projectid
-      : "No Project Selected";
-
   useEffect(() => {
     // fetch user and profile on mount
     const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("display_name")
-          .eq("id", user.id)
-          .single();
+        const { data } = await supabase.from("profiles").select("display_name").eq("id", user.id).single();
         setProfile(data);
       }
     };
@@ -40,31 +25,24 @@ export default function NavBar() {
     getUser();
 
     // listen for auth changes (sign in/out), update profile accordingly
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user || null);
-      if (session?.user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("display_name, avatar_url")
-          .eq("id", session.user.id)
-          .single();
-        setProfile(data);
-      } else {
-        setProfile(null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      async(_event, session) => {
+        setUser(session?.user || null);
+        if (session?.user) {
+          const { data } = await supabase.from("profiles").select("display_name", "avatar_url").eq("id", session.user.id).single();
+          setProfile(data);
+        } else {
+          setProfile(null);
+        }
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const avatarUrl =
-    profile?.avatar_url ?? user?.user_metadata?.avatar_url;
-  const displayName =
-    profile?.display_name ??
-    user?.user_metadata?.full_name ??
-    "User";
+  // gets avatar from user metadata, display name from profile or user metadata, and falls back to "User" if neither is available
+  const avatarUrl = profile?.avatar_url ?? user?.user_metadata?.avatar_url;
+  const displayName = profile?.display_name ?? user?.user_metadata?.full_name ?? "User";
   const initials = displayName.charAt(0).toUpperCase();
 
   return (
@@ -74,18 +52,19 @@ export default function NavBar() {
         <h2 style={styles.logo}>QuestBoard</h2>
 
         <div style={styles.projectBox}>
+          {/*Section for the current project - placeholder*/}
           <span style={styles.projectLabel}>Current Project</span>
           <h3 style={styles.projectName}>{projectName}</h3>
         </div>
 
         <nav style={styles.nav}>
-          <Link href={`/${params.projectid??""}/charter`} style={styles.link}>
+          <Link href="/charter" style={styles.link}>
             Project Charter
           </Link>
-          <Link href={`/${params.projectid??""}/tasks`} style={styles.link}>
+          <Link href="/tasks" style={styles.link}>
             Tasks
           </Link>
-          <Link href={`/${params.projectid??""}/discussions`} style={styles.link}>
+          <Link href="/discussions" style={styles.link}>
             Discussion Boards
           </Link>
         </nav>
@@ -102,8 +81,11 @@ export default function NavBar() {
           <span>{user ? displayName : "Not signed in"}</span>
         </div>
 
-        {user ? <LogoutButton /> : <LoginButton />}
-
+        {user ? (
+          <LogoutButton />
+        ) : (
+          <LoginButton />
+        )}
         <Link href="/settings" style={styles.link}>
           ⚙️ Settings
         </Link>
