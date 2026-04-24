@@ -3,11 +3,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/lib/client";
 
+const supabase = createClient();
+
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const supabase = createClient();
-
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,11 +34,14 @@ export function AuthProvider({ children }) {
   async function logout() {
     setLoading(true);
 
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.warn("Logout error:", error.message);
+    }
 
     setUser(null);
     setProfile(null);
-
     setLoading(false);
   }
 
@@ -50,12 +53,19 @@ export function AuthProvider({ children }) {
 
       const {
         data: { user },
+        error,
       } = await supabase.auth.getUser();
 
       if (!mounted) return;
 
-      setUser(user ?? null);
-      await loadProfile(user?.id);
+      if (error) {
+        console.warn("getUser error:", error.message);
+      }
+
+      const nextUser = user ?? null;
+
+      setUser(nextUser);
+      await loadProfile(nextUser?.id);
 
       if (mounted) setLoading(false);
     }
@@ -84,9 +94,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user, profile, loading, logout }}
-    >
+    <AuthContext.Provider value={{ user, profile, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
