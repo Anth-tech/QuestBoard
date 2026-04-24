@@ -3,7 +3,7 @@
 import Link from "next/link";
 import LoginButton from "./loginButton";
 import LogoutButton from "./logoutButton";
-import { useAuth } from "@/app/context/authContext";
+import { useAuth } from "../context/authContext";
 
 export default function NavBar({ projectName = "Project A1" }) {//optional name for now for placeholders
   const { user, profile, loading } = useAuth();
