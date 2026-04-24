@@ -2,23 +2,48 @@
 
 import Link from "next/link";
 import LoginButton from "./loginButton";
-import LogoutButton from "./logoutButton"
-import { useAuth } from "../context/authContext";
+import LogoutButton from "./logoutButton";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/client.js";
 
-export default function NavBar({ projectName = "Project A1" }) {
-  const { user, profile, loading } = useAuth();
+export default function NavBar({ projectName = "Project A1" }) {//optional name for now for placeholders
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const supabase = createClient();
 
-  const displayName =
-    profile?.display_name ??
-    user?.user_metadata?.full_name ??
-    "User";
+  useEffect(() => {
+    // fetch user and profile on mount
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      if (user) {
+        const { data } = await supabase.from("profiles").select("display_name").eq("id", user.id).single();
+        setProfile(data);
+      }
+    };
 
-  const avatarUrl =
-    profile?.avatar_url ??
-    user?.user_metadata?.avatar_url;
+    getUser();
 
-  const safeDisplayName = displayName || "User";
-  const initials = safeDisplayName.charAt(0).toUpperCase();
+    // listen for auth changes (sign in/out), update profile accordingly
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      async(_event, session) => {
+        setUser(session?.user || null);
+        if (session?.user) {
+          const { data } = await supabase.from("profiles").select("display_name", "avatar_url").eq("id", session.user.id).single();
+          setProfile(data);
+        } else {
+          setProfile(null);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // gets avatar from user metadata, display name from profile or user metadata, and falls back to "User" if neither is available
+  const avatarUrl = profile?.avatar_url ?? user?.user_metadata?.avatar_url;
+  const displayName = profile?.display_name ?? user?.user_metadata?.full_name ?? "User";
+  const initials = displayName.charAt(0).toUpperCase();
 
   return (
     <aside style={styles.sidebar}>
@@ -27,14 +52,21 @@ export default function NavBar({ projectName = "Project A1" }) {
         <h2 style={styles.logo}>QuestBoard</h2>
 
         <div style={styles.projectBox}>
+          {/*Section for the current project - placeholder*/}
           <span style={styles.projectLabel}>Current Project</span>
           <h3 style={styles.projectName}>{projectName}</h3>
         </div>
 
         <nav style={styles.nav}>
-          <Link href="/charter" style={styles.link}>Project Charter</Link>
-          <Link href="/tasks" style={styles.link}>Tasks</Link>
-          <Link href="/discussions" style={styles.link}>Discussion Boards</Link>
+          <Link href="/charter" style={styles.link}>
+            Project Charter
+          </Link>
+          <Link href="/tasks" style={styles.link}>
+            Tasks
+          </Link>
+          <Link href="/discussions" style={styles.link}>
+            Discussion Boards
+          </Link>
         </nav>
       </div>
 
@@ -44,22 +76,16 @@ export default function NavBar({ projectName = "Project A1" }) {
           {avatarUrl ? (
             <img src={avatarUrl} alt="avatar" style={styles.avatarImg} />
           ) : (
-            <div style={styles.avatar}>
-              {user ? initials : "U"}
-            </div>
+            <div style={styles.avatar}>{user ? initials : "U"}</div>
           )}
-
-          <span>
-            {loading
-              ? "Loading..."
-              : user
-                ? displayName
-                : "Not signed in"}
-          </span>
+          <span>{user ? displayName : "Not signed in"}</span>
         </div>
 
-        {user ? <LogoutButton /> : <LoginButton />}
-
+        {user ? (
+          <LogoutButton />
+        ) : (
+          <LoginButton />
+        )}
         <Link href="/settings" style={styles.link}>
           ⚙️ Settings
         </Link>
