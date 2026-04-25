@@ -2,81 +2,30 @@
 
 import Link from "next/link";
 import LoginButton from "./loginButton";
+import { useAuth } from "@/hooks/useAuth";
 import LogoutButton from "./logoutButton";
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/client.js";
 
-export default function NavBar({ projectName = "Project A1" }) {//optional name for now for placeholders
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const supabase = createClient();
-
-  useEffect(() => {
-    // fetch user and profile on mount
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      if (user) {
-        const { data } = await supabase.from("profiles").select("display_name").eq("id", user.id).single();
-        setProfile(data);
-      }
-    };
-
-    getUser();
-
-    // listen for auth changes (sign in/out), update profile accordingly
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      async(_event, session) => {
-        setUser(session?.user || null);
-        if (session?.user) {
-          const { data } = await supabase.from("profiles").select("display_name", "avatar_url").eq("id", session.user.id).single();
-          setProfile(data);
-        } else {
-          setProfile(null);
-        }
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // gets avatar from user metadata, display name from profile or user metadata, and falls back to "User" if neither is available
-  const avatarUrl = profile?.avatar_url ?? user?.user_metadata?.avatar_url;
-  const displayName = profile?.display_name ?? user?.user_metadata?.full_name ?? "User";
-  const initials = displayName.charAt(0).toUpperCase();
+export default function NavBar() {
+  const { user, avatarUrl, displayName, initials } = useAuth();
 
   return (
     <aside style={styles.sidebar}>
-      {/* Top Section */}
       <div>
         <h2 style={styles.logo}>QuestBoard</h2>
 
-        <div style={styles.projectBox}>
-          {/*Section for the current project - placeholder*/}
-          <span style={styles.projectLabel}>Current Project</span>
-          <h3 style={styles.projectName}>{projectName}</h3>
-        </div>
-
         <nav style={styles.nav}>
-          <Link href="/charter" style={styles.link}>
-            Project Charter
-          </Link>
-          <Link href="/tasks" style={styles.link}>
-            Tasks
-          </Link>
-          <Link href="/discussions" style={styles.link}>
-            Discussion Boards
-          </Link>
+          <Link href="/charter" style={styles.link}>Project Charter</Link>
+          <Link href="/tasks" style={styles.link}>Tasks</Link>
+          <Link href="/discussions" style={styles.link}>Discussion Boards</Link>
         </nav>
       </div>
 
-      {/* Bottom Section */}
       <div style={styles.bottomSection}>
         <div style={styles.profile}>
           {avatarUrl ? (
             <img src={avatarUrl} alt="avatar" style={styles.avatarImg} />
           ) : (
-            <div style={styles.avatar}>{user ? initials : "U"}</div>
+            <div style={styles.avatar}>{user ? initials : "?"}</div>
           )}
           <span>{user ? displayName : "Not signed in"}</span>
         </div>
@@ -86,9 +35,8 @@ export default function NavBar({ projectName = "Project A1" }) {//optional name 
         ) : (
           <LoginButton />
         )}
-        <Link href="/settings" style={styles.link}>
-          ⚙️ Settings
-        </Link>
+
+        <Link href="/settings" style={styles.link}>⚙️ Settings</Link>
       </div>
     </aside>
   );

@@ -5,6 +5,7 @@ export default function LogoutButton() {
   // Initialize the Supabase client for browser use
   const supabase = createClient();
 
+  // signs out and redirects to last window
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.href = "/";
