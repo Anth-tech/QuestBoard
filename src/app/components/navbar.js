@@ -5,7 +5,7 @@ import LoginButton from "./loginButton";
 import { useAuth } from "@/hooks/useAuth";
 import LogoutButton from "./logoutButton";
 
-export default function NavBar() {
+export default function NavBar({ projectName = "Project A1" }) {
   const { user, avatarUrl, displayName, initials } = useAuth();
 
   return (
