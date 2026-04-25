@@ -13,6 +13,11 @@ export default function NavBar() {
       <div>
         <h2 style={styles.logo}>QuestBoard</h2>
 
+        <div style={styles.projectBox}>{/*Section for the current project - placeholder*/}
+          <span style={styles.projectLabel}>Current Project</span>
+          <h3 style={styles.projectName}>{projectName}</h3>
+        </div>
+
         <nav style={styles.nav}>
           <Link href="/charter" style={styles.link}>Project Charter</Link>
           <Link href="/tasks" style={styles.link}>Tasks</Link>
