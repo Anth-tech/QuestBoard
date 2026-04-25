@@ -4,18 +4,38 @@ import Link from "next/link";
 import LoginButton from "./loginButton";
 import { useAuth } from "@/hooks/useAuth";
 import LogoutButton from "./logoutButton";
+import { useProjects } from "@/hooks/useProjects";
 
 export default function NavBar({ projectName = "Project A1" }) {
   const { user, avatarUrl, displayName, initials } = useAuth();
+  const { projects, selectedProject, setSelectedProject } = useProjects(user);
 
   return (
     <aside style={styles.sidebar}>
       <div>
         <h2 style={styles.logo}>QuestBoard</h2>
 
-        <div style={styles.projectBox}>{/*Section for the current project - placeholder*/}
+        {/* Project Selector */}
+         <div style={styles.projectBox}>
           <span style={styles.projectLabel}>Current Project</span>
-          <h3 style={styles.projectName}>{projectName}</h3>
+          {projects.length > 0 ? (
+            <select
+              style={styles.projectSelect}
+              value={selectedProject?.id ?? ""}
+              onChange={(e) => {
+                const found = projects.find((p) => p.id === e.target.value);
+                setSelectedProject(found);
+              }}
+            >
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          ) : (
+            <span style={styles.noProjects}>
+              {user ? "No projects yet" : "Sign in to see projects"}
+            </span>
+          )}
         </div>
 
         <nav style={styles.nav}>
@@ -72,15 +92,22 @@ const styles = {
     padding: "10px",
     backgroundColor: "#1f2937",
     borderRadius: "8px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
   },
-  projectLabel: {
-    fontSize: "12px",
-    color: "#9ca3af",
+  projectLabel: { fontSize: "12px", color: "#9ca3af" },
+  projectSelect: {
+    backgroundColor: "#111827",
+    color: "white",
+    border: "1px solid #374151",
+    borderRadius: "6px",
+    padding: "4px 6px",
+    fontSize: "14px",
+    width: "100%",
+    cursor: "pointer",
   },
-  projectName: {
-    margin: 0,
-    fontSize: "16px",
-  },
+  noProjects: { fontSize: "13px", color: "#6b7280", fontStyle: "italic" },
 
   nav: {
     display: "flex",
