@@ -18,10 +18,10 @@ export default function DiscussionPage() {
 
   // Auto-select first board when boards load
   useEffect(() => {
-  if (boards.length > 0 && !selectedBoard) {
-    setSelectedBoard(boards[0]);
-  }
-}, [boards, selectedBoard]);
+    if (boards.length > 0 && !selectedBoard) {
+      setSelectedBoard(boards[0]);
+    }
+  }, [boards]);
 
   return (
     <div style={styles.container}>
@@ -67,9 +67,9 @@ export default function DiscussionPage() {
             >
               <span>{post.title}</span>
 
-              <span style={styles.commentBadge}>
+              {/*<span style={styles.commentBadge}>
                 {post.commentCount}
-              </span>
+              </span>*/}
             </Link>
           ))
         )}
