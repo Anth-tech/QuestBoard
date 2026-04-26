@@ -9,11 +9,9 @@ import { useSearchParams } from "next/navigation";
 export default function DiscussionPage() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get("project");
-
   const { boards } = useDiscussionBoards(projectId);
 
   const [openBoardId, setOpenBoardId] = useState(null);
-
   const toggleBoard = (boardId) => {
     setOpenBoardId((prev) => (prev === boardId ? null : boardId));
   };

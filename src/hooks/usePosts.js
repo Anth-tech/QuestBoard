@@ -10,6 +10,7 @@ export function useDiscussions(boardId) {
   useEffect(() => {
     if (!boardId) {
       setPosts([]);
+      setLoading(false);
       return;
     }
 
