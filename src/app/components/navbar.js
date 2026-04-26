@@ -6,11 +6,8 @@ import LogoutButton from "./logoutButton";
 import CreateProjectModal from "./createProjectModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useProjects } from "@/hooks/useProjects";
-import { useRouter } from "next/navigation";
 
 export default function NavBar() {
-  const router = useRouter();
-
   const { user, avatarUrl, displayName, initials } = useAuth();
   const {
     projects,
@@ -33,7 +30,6 @@ export default function NavBar() {
         {/* Project Selector */}
         <div style={styles.projectBox}>
           <span style={styles.projectLabel}>Current Project</span>
-
           {projects.length > 0 ? (
             <select
               style={styles.projectSelect}
@@ -44,18 +40,11 @@ export default function NavBar() {
                   e.target.value = selectedProject?.id ?? "";
                   return;
                 }
-
                 const found = projects.find((p) => p.id === e.target.value);
                 setSelectedProject(found);
-
-                // 👇 Send selected project to Discussions page
-                if (found) {
-                  router.push(`/discussions?projectId=${found.id}`);
-                }
               }}
             >
               <option value="__create__">+ New Project</option>
-
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -69,7 +58,6 @@ export default function NavBar() {
               <span style={styles.noProjects}>
                 {user ? "No projects yet" : "Sign in to see projects"}
               </span>
-
               {user && (
                 <button
                   onClick={() => setShowModal(true)}
@@ -97,12 +85,9 @@ export default function NavBar() {
           <Link href="/charter" style={styles.link}>
             Project Charter
           </Link>
-
           <Link href="/tasks" style={styles.link}>
             Tasks
           </Link>
-
-          {/* 👇 Now receives project via query string */}
           <Link href="/discussions" style={styles.link}>
             Discussion Boards
           </Link>
@@ -116,7 +101,6 @@ export default function NavBar() {
           ) : (
             <div style={styles.avatar}>{user ? initials : "?"}</div>
           )}
-
           <span>{user ? displayName : "Not signed in"}</span>
         </div>
 
