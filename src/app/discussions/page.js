@@ -3,17 +3,17 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useProjects } from "@/hooks/useProjects";
-import { useDiscussionBoards } from "@/hooks/useBoards";
-import { useDiscussions } from "@/hooks/usePosts";
+import { useBoards } from "@/hooks/useBoards";
+import { usePosts } from "@/hooks/usePosts";
 
 export default function DiscussionPage() {
   const { selectedProject } = useProjects();
 
-  const { boards } = useDiscussionBoards(selectedProject?.id);
+  const { boards } = useBoards(selectedProject?.id);
 
   const [selectedBoard, setSelectedBoard] = useState(null);
 
-  const { posts, loading } = useDiscussions(selectedBoard?.id);
+  const { posts, loading } = usePosts(selectedBoard?.id);
 
   // Auto-select first board when boards load
   useEffect(() => {
@@ -28,6 +28,7 @@ export default function DiscussionPage() {
       {/* Header */}
       <div style={styles.header}>
         <h1>Discussion Boards</h1>
+        <h2>{selectedProject ? selectedProject.name : "None selected"}</h2>
 
         <button style={styles.button}>
           + Create Post
