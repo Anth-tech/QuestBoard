@@ -21,12 +21,12 @@ export function useProjects(user) {
       // projects user owns or is a member of are fetched;
       const { data: owned } = await supabase
         .from("projects")
-        .select("id, name")
+        .select("id, name, owner_id")
         .eq("owner_id", user.id);
 
       const { data: memberships } = await supabase
         .from("project_members")
-        .select("project_id, projects(id, name)")
+        .select("project_id, projects(id, name, owner_id)")
         .eq("user_id", user.id);
 
       // memberships needs to be mapped to remove unneccessary data since we only care about the project

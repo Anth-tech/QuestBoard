@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import LoginButton from "./loginButton";
-import LogoutButton from "./logoutButton";
-import CreateProjectModal from "./createProjectModal";
+import LoginButton from "./buttons/loginButton";
+import LogoutButton from "./buttons/logoutButton";
+import FloatingActionButton from "./buttons/floatingActionButton";
+import CreateProjectModal from "./modals/createProjectModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useProjects } from "@/hooks/useProjects";
 
@@ -110,6 +111,12 @@ export default function NavBar() {
           ⚙️ Settings
         </Link>
       </div>
+
+      {/* Floating action button for project owner to create tasks/discussions */}
+      <FloatingActionButton
+        user={user}
+        selectedProject={selectedProject}
+      />
     </aside>
   );
 }

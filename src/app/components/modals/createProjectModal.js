@@ -31,7 +31,10 @@ export default function CreateProjectModal({
         />
 
         <div style={styles.modalButtons}>
-          <button onClick={() => setShowModal(false)} style={styles.cancelButton}>
+          <button
+            onClick={() => setShowModal(false)}
+            style={styles.cancelButton}
+          >
             Cancel
           </button>
           <button onClick={handleCreateProject} style={styles.confirmButton}>
@@ -51,7 +54,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 1000,
+    zIndex: 2000,
   },
   modal: {
     backgroundColor: "#1f2937",
@@ -74,7 +77,12 @@ const styles = {
     width: "100%",
     boxSizing: "border-box",
   },
-  modalButtons: { display: "flex", justifyContent: "flex-end", gap: "10px", marginTop: "6px" },
+  modalButtons: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "10px",
+    marginTop: "6px",
+  },
   cancelButton: {
     background: "none",
     border: "1px solid #374151",
