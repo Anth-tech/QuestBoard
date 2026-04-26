@@ -2,16 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-
+import { useProjects } from "@/hooks/useProjects";
 import { useDiscussionBoards } from "@/hooks/useBoards";
 import { useDiscussions } from "@/hooks/usePosts";
 
 export default function DiscussionPage() {
-  const searchParams = useSearchParams();
-  const projectId = searchParams.get("projectId");
+  const { selectedProject } = useProjects();
 
-  const { boards } = useDiscussionBoards(projectId);
+  const { boards } = useDiscussionBoards(selectedProject?.id);
 
   const [selectedBoard, setSelectedBoard] = useState(null);
 
@@ -26,14 +24,11 @@ export default function DiscussionPage() {
 
   return (
     <div style={styles.container}>
+
       {/* Header */}
       <div style={styles.header}>
         <h1>Discussion Boards</h1>
-
-        <h2>
-          {projectId ? `Project: ${projectId}` : "None selected"}
-        </h2>
-
+        <h2>{selectedProject ? selectedProject.name : "None selected"}</h2>
         <button style={styles.button}>
           + Create Post
         </button>
