@@ -90,6 +90,7 @@ export default function DiscussionPage() {
       <CreatePostModal
         showModal={post.showModal}
         setShowModal={post.setShowModal}
+        selectedBoard={selectedBoard}
         title={post.title}
         setTitle={post.setTitle}
         content={post.content}
