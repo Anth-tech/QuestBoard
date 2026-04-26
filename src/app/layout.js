@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/navbar";
-import { ProjectsProvider } from "@/context/projectsContext";
+import { ProjectsProvider } from "@/context/projectContext";
 
 export default function RootLayout({ children }) {
   return (
