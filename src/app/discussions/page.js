@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useProjects } from "@/hooks/useProjects";
+import { useProjects } from "@/context/ProjectsContext";
 import { useDiscussionBoards } from "@/hooks/useBoards";
 import { useDiscussions } from "@/hooks/usePosts";
 

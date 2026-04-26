@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/client";
-import { useParams } from "next/navigation";
+
 
 const supabase = createClient();
 
