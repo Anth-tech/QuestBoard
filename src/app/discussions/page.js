@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useProjects } from "@/hooks/useProjects";
 import { useDiscussionBoards } from "@/hooks/useBoards";
 import { useDiscussions } from "@/hooks/usePosts";
 import { useSearchParams } from "next/navigation";
@@ -10,13 +9,10 @@ import { useSearchParams } from "next/navigation";
 export default function DiscussionPage() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get("project");
-  //const { selectedProject } = useProjects();
 
-  //const { boards } = useDiscussionBoards(selectedProject?.id);
   const { boards } = useDiscussionBoards(projectId);
-  const selectedBoard = boards[0];//make sure to undo later
 
-  //const [selectedBoard, setSelectedBoard] = useState(null);
+  const [selectedBoard, setSelectedBoard] = useState(null);
 
   const { posts, loading } = useDiscussions(selectedBoard?.id);
 
