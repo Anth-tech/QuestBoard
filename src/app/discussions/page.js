@@ -9,7 +9,8 @@ import { useDiscussions } from "@/hooks/usePosts";
 export default function DiscussionPage() {
   const { selectedProject } = useProjects();
 
-  const { boards } = useDiscussionBoards(selectedProject?.id);
+  //const { boards } = useDiscussionBoards(selectedProject?.id);
+  const { boards } = useDiscussionBoards('f566845d-220c-4cb7-89d8-bd1595073c11');
 
   const [selectedBoard, setSelectedBoard] = useState(null);
 
