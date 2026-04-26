@@ -16,7 +16,7 @@ export default function CreatePostModal({
     <div style={styles.modalOverlay} onClick={() => setShowModal(false)}>
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h3 style={styles.modalTitle}>
-          New Task
+          New Post
         </h3>
 
         <p style={styles.boardHint}>
@@ -28,7 +28,7 @@ export default function CreatePostModal({
           style={styles.modalInput}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Task title"
+          placeholder="Post title"
         />
 
         <label style={styles.modalLabel}>Description:</label>

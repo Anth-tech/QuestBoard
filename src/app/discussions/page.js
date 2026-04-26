@@ -21,8 +21,8 @@ export default function DiscussionPage() {
   const selectedBoard = boards.find((b) => b.id === openBoardId) || null;
 
   const { user } = useAuth();
-  const post = useCreatePost(openBoardId, user);
-  const { posts, loading } = useDiscussions(openBoardId);
+  const post = useCreatePost(openBoardId, user, refetch);
+  const { posts, loading, refetch } = useDiscussions(openBoardId);
 
 
   return (

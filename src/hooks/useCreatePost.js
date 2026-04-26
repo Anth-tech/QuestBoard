@@ -3,7 +3,7 @@ import { createClient } from "@/lib/client";
 
 const supabase = createClient();
 
-export function useCreatePost(selectedBoard, user) {
+export function useCreatePost(selectedBoard, user, refetch) {
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -31,6 +31,9 @@ export function useCreatePost(selectedBoard, user) {
     setTitle("");
     setContent("");
     setShowModal(false);
+
+    await post.handleCreatePost();
+    refetch();
 
     return data;
   };
