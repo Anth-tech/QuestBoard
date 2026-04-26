@@ -11,8 +11,9 @@ export default function DiscussionPage() {
 
   //const { boards } = useDiscussionBoards(selectedProject?.id);
   const { boards } = useDiscussionBoards('f566845d-220c-4cb7-89d8-bd1595073c11');
+  const selectedBoard = boards[0];//make sure to undo later
 
-  const [selectedBoard, setSelectedBoard] = useState(null);
+  //const [selectedBoard, setSelectedBoard] = useState(null);
 
   const { posts, loading } = useDiscussions(selectedBoard?.id);
 
