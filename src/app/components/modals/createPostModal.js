@@ -47,7 +47,7 @@ export default function CreateTaskModal({
             Cancel
           </button>
 
-          <button onClick={handleCreateTask} style={styles.confirmButton}>
+          <button onClick={handleCreatePost} style={styles.confirmButton}>
             Create
           </button>
         </div>
