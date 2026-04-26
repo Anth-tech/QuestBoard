@@ -20,12 +20,6 @@ export default function DiscussionPage() {
 
   const { posts, loading } = useDiscussions(openBoardId);
 
-  // Auto-open first board when boards load
-  useEffect(() => {
-    if (boards.length > 0 && openBoardId === null) {
-      setOpenBoardId(boards[0].id);
-    }
-  }, [boards, openBoardId]);
 
   return (
     <div style={styles.container}>
