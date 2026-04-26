@@ -28,7 +28,6 @@ export default function DiscussionPage() {
       {/* Header */}
       <div style={styles.header}>
         <h1>Discussion Boards</h1>
-        <h2>{selectedProject ? selectedProject.name : "None selected"}</h2>
 
         <button style={styles.button}>
           + Create Post
