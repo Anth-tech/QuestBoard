@@ -2,13 +2,25 @@
 
 import Link from "next/link";
 import LoginButton from "./loginButton";
-import { useAuth } from "@/hooks/useAuth";
 import LogoutButton from "./logoutButton";
+import CreateProjectModal from "./createProjectModal";
+import { useAuth } from "@/hooks/useAuth";
 import { useProjects } from "@/hooks/useProjects";
 
-export default function NavBar({ projectName = "Project A1" }) {
+export default function NavBar() {
   const { user, avatarUrl, displayName, initials } = useAuth();
-  const { projects, selectedProject, setSelectedProject } = useProjects(user);
+  const {
+    projects,
+    selectedProject,
+    setSelectedProject,
+    showModal,
+    setShowModal,
+    newProjectName,
+    setNewProjectName,
+    newProjectDesc,
+    setNewProjectDesc,
+    handleCreateProject,
+  } = useProjects(user);
 
   return (
     <aside style={styles.sidebar}>
@@ -16,19 +28,27 @@ export default function NavBar({ projectName = "Project A1" }) {
         <h2 style={styles.logo}>QuestBoard</h2>
 
         {/* Project Selector */}
-         <div style={styles.projectBox}>
+        <div style={styles.projectBox}>
           <span style={styles.projectLabel}>Current Project</span>
           {projects.length > 0 ? (
             <select
               style={styles.projectSelect}
               value={selectedProject?.id ?? ""}
               onChange={(e) => {
+                if (e.target.value === "__create__") {
+                  setShowModal(true);
+                  e.target.value = selectedProject?.id ?? "";
+                  return;
+                }
                 const found = projects.find((p) => p.id === e.target.value);
                 setSelectedProject(found);
               }}
             >
+              <option value="__create__">+ New Project</option>
               {projects.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
               ))}
             </select>
           ) : (
@@ -38,10 +58,27 @@ export default function NavBar({ projectName = "Project A1" }) {
           )}
         </div>
 
+        {/* Modal form for New Project */}
+        <CreateProjectModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          newProjectName={newProjectName}
+          setNewProjectName={setNewProjectName}
+          newProjectDesc={newProjectDesc}
+          setNewProjectDesc={setNewProjectDesc}
+          handleCreateProject={handleCreateProject}
+        />
+
         <nav style={styles.nav}>
-          <Link href="/charter" style={styles.link}>Project Charter</Link>
-          <Link href="/tasks" style={styles.link}>Tasks</Link>
-          <Link href="/discussions" style={styles.link}>Discussion Boards</Link>
+          <Link href="/charter" style={styles.link}>
+            Project Charter
+          </Link>
+          <Link href="/tasks" style={styles.link}>
+            Tasks
+          </Link>
+          <Link href="/discussions" style={styles.link}>
+            Discussion Boards
+          </Link>
         </nav>
       </div>
 
@@ -55,13 +92,11 @@ export default function NavBar({ projectName = "Project A1" }) {
           <span>{user ? displayName : "Not signed in"}</span>
         </div>
 
-        {user ? (
-          <LogoutButton />
-        ) : (
-          <LoginButton />
-        )}
+        {user ? <LogoutButton /> : <LoginButton />}
 
-        <Link href="/settings" style={styles.link}>⚙️ Settings</Link>
+        <Link href="/settings" style={styles.link}>
+          ⚙️ Settings
+        </Link>
       </div>
     </aside>
   );
@@ -148,5 +183,5 @@ const styles = {
     borderRadius: "50%",
     objectFit: "cover",
     flexShrink: 0,
-  }
+  },
 };

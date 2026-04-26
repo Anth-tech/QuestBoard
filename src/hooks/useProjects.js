@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/client";
+const supabase = createClient();
 
 export function useProjects(user) {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
-  const supabase = createClient();
+  const [showModal, setShowModal] = useState(false);
+  const [newProjectName, setNewProjectName] = useState("");
+  const [newProjectDesc, setNewProjectDesc] = useState("");
 
   useEffect(() => {
     // no point in fetching if user isn't signed in
@@ -41,5 +44,44 @@ export function useProjects(user) {
     fetchProjects();
   }, [user]); // re-fetches whenever the user changes (sign in/out)
 
-  return { projects, selectedProject, setSelectedProject };
+  // handles creating a new project using a modal
+  const handleCreateProject = async () => {
+    if (!newProjectName.trim()) return;
+
+    const { error } = await supabase.from("projects").insert({
+      name: newProjectName,
+      description: newProjectDesc.trim() || null,
+      owner_id: user.id,
+    });
+
+    console.log("error:", error);
+
+    if (!error) {
+      // refetch full list so new project's id is included
+      const { data: owned } = await supabase
+        .from("projects")
+        .select("id, name")
+        .eq("owner_id", user.id);
+
+      const newProject = owned?.find((p) => p.name === newProjectName);
+      setProjects((prev) => [...prev, newProject]);
+      setSelectedProject(newProject);
+      setNewProjectName("");
+      setNewProjectDesc("");
+      setShowModal(false);
+    }
+  };
+
+  return {
+    projects,
+    selectedProject,
+    setSelectedProject,
+    showModal,
+    setShowModal,
+    newProjectName,
+    setNewProjectName,
+    newProjectDesc,
+    setNewProjectDesc,
+    handleCreateProject,
+  };
 }
