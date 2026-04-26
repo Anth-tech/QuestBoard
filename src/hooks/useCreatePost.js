@@ -32,8 +32,7 @@ export function useCreatePost(selectedBoard, user, refetch) {
     setContent("");
     setShowModal(false);
 
-    await post.handleCreatePost();
-    refetch();
+    await refetch();
 
     return data;
   };
