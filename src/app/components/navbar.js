@@ -7,6 +7,8 @@ import FloatingActionButton from "./buttons/floatingActionButton";
 import CreateProjectModal from "./modals/createProjectModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useProjects } from "@/hooks/useProjects";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function NavBar() {
   const { user, avatarUrl, displayName, initials } = useAuth();
@@ -22,6 +24,18 @@ export default function NavBar() {
     setNewProjectDesc,
     handleCreateProject,
   } = useProjects(user);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const projectIdFromUrl = searchParams.get("project");
+  
+  useEffect(() => {
+    if (projectIdFromUrl && projects.length > 0) {
+      const found = projects.find(p => p.id === projectIdFromUrl);
+      if (found && found.id !== selectedProject?.id) {
+        setSelectedProject(found);
+      }
+    }
+  }, [projectIdFromUrl, projects]);
 
   return (
     <aside style={styles.sidebar}>
@@ -43,6 +57,7 @@ export default function NavBar() {
                 }
                 const found = projects.find((p) => p.id === e.target.value);
                 setSelectedProject(found);
+                router.push(`?project=${found.id}`);
               }}
             >
               <option value="__create__">+ New Project</option>
@@ -83,13 +98,13 @@ export default function NavBar() {
         />
 
         <nav style={styles.nav}>
-          <Link href="/charter" style={styles.link}>
+          <Link href={`/charter?project=${selectedProject?.id}`} style={styles.link}>
             Project Charter
           </Link>
-          <Link href="/tasks" style={styles.link}>
+          <Link href={`/tasks?project=${selectedProject?.id}`} style={styles.link}>
             Tasks
           </Link>
-          <Link href="/discussions" style={styles.link}>
+          <Link href={`/discussions?project=${selectedProject?.id}`} style={styles.link}>
             Discussion Boards
           </Link>
         </nav>
