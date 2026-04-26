@@ -18,10 +18,10 @@ export default function DiscussionPage() {
 
   // Auto-select first board when boards load
   useEffect(() => {
-    if (boards.length > 0 && !selectedBoard) {
-      setSelectedBoard(boards[0]);
-    }
-  }, [boards]);
+  if (boards.length > 0 && !selectedBoard) {
+    setSelectedBoard(boards[0]);
+  }
+}, [boards, selectedBoard]);
 
   return (
     <div style={styles.container}>
@@ -29,7 +29,7 @@ export default function DiscussionPage() {
       {/* Header */}
       <div style={styles.header}>
         <h1>Discussion Boards</h1>
-        <h2>{selectedProject ? selectedProject.name : "None selected"}</h2>
+
         <button style={styles.button}>
           + Create Post
         </button>
