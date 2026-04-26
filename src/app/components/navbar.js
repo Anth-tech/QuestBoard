@@ -35,7 +35,7 @@ export default function NavBar() {
         setSelectedProject(found);
       }
     }
-  }, [projectIdFromUrl, projects]);
+  }, [projectIdFromUrl, projects, selectedProject]);
 
   return (
     <aside style={styles.sidebar}>
@@ -56,8 +56,10 @@ export default function NavBar() {
                   return;
                 }
                 const found = projects.find((p) => p.id === e.target.value);
-                setSelectedProject(found);
-                router.push(`?project=${found.id}`);
+                if (found) {
+                  setSelectedProject(found);
+                  router.push(`?project=${found.id}`);
+                }
               }}
             >
               <option value="__create__">+ New Project</option>
@@ -98,13 +100,13 @@ export default function NavBar() {
         />
 
         <nav style={styles.nav}>
-          <Link href={`/charter?project=${selectedProject?.id}`} style={styles.link}>
+          <Link href={selectedProject ? `/charter?project=${selectedProject?.id}` : "/charter"} style={styles.link}>
             Project Charter
           </Link>
-          <Link href={`/tasks?project=${selectedProject?.id}`} style={styles.link}>
+          <Link href={selectedProject ? `/tasks?project=${selectedProject?.id}` : "/tasks"} style={styles.link}>
             Tasks
           </Link>
-          <Link href={`/discussions?project=${selectedProject?.id}`} style={styles.link}>
+          <Link href={selectedProject ? `/discussions?project=${selectedProject?.id}` : "/discussions"} style={styles.link}>
             Discussion Boards
           </Link>
         </nav>
