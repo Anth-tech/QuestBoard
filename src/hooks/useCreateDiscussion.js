@@ -36,29 +36,34 @@ export function useCreateDiscussion(selectedProject) {
   const handleCreateDiscussion = async () => {
     if (!title.trim()) return;
 
-    // creates a new discussion and inserts it to db
-    const { data: board, error } = await supabase
-      .from("discussion_boards")
-      .insert({
-        title: title.trim(),
-        is_private: isPrivate,
-        project_id: selectedProject.id,
-      })
-      .select("id")
-      .single();
+    const { error } = await supabase.from("discussion_boards").insert({
+      title: title.trim(),
+      is_private: isPrivate,
+      project_id: selectedProject.id,
+    });
 
     if (error) {
-      console.error(error);
+      console.error("code:", error.code);
+      console.error("message:", error.message);
       return;
     }
 
     // insert allowed users for private boards
     if (isPrivate && allowedUsers.length > 0) {
-      await supabase
-        .from("discussion_board_members")
-        .insert(
-          allowedUsers.map((user_id) => ({ board_id: board.id, user_id })),
-        );
+      const { data: board } = await supabase
+        .from("discussion_boards")
+        .select("id")
+        .eq("project_id", selectedProject.id)
+        .eq("title", title.trim())
+        .single();
+
+      if (board) {
+        await supabase
+          .from("discussion_board_members")
+          .insert(
+            allowedUsers.map((user_id) => ({ board_id: board.id, user_id })),
+          );
+      }
     }
 
     setTitle("");
