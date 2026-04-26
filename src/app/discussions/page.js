@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useDiscussionBoards } from "@/hooks/useBoards";
+import { useDiscussionBoards } from "@/hooks/useDiscussionBoards";
 import { useDiscussions } from "@/hooks/usePosts";
 import { useSearchParams } from "next/navigation";
 import { useCreatePost } from "@/hooks/useCreatePost";

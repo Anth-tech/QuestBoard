@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/client";
-import { useParams } from "next/navigation";
 
 const supabase = createClient();
 
@@ -34,6 +33,26 @@ export function useDiscussionBoards(projectId) {
     };
 
     fetchBoards();
+
+    // listens for new boards being inserted
+    const channel = supabase
+    .channel(`discussion_boards:${projectId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "discussion_boards",
+        filter: `project_id=eq.${projectId}`,
+      },
+      (payload) => {
+        if (payload.new.project_id === projectId) {
+          setBoards((prev) => [...prev, payload.new]);
+        }
+      }
+    ).subscribe();
+    
+    return () => supabase.removeChannel(channel);
   }, [projectId]);
 
   return { boards, loading };
