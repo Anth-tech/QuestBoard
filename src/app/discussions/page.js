@@ -6,7 +6,8 @@ import { useDiscussionBoards } from "@/hooks/useBoards";
 import { useDiscussions } from "@/hooks/usePosts";
 import { useSearchParams } from "next/navigation";
 import { useCreatePost } from "@/hooks/useCreatePost";
-import { CreatePostModal } from "@/app/components/modals/createPostModal"
+import { useAuth } from "@/hooks/useAuth";
+import CreatePostModal from "@/app/components/modals/createPostModal"
 
 export default function DiscussionPage() {
   const searchParams = useSearchParams();
@@ -19,6 +20,7 @@ export default function DiscussionPage() {
   };
   const selectedBoard = boards.find((b) => b.id === openBoardId) || null;
 
+  const { user } = useAuth();
   const post = useCreatePost(selectedBoard, user);
   const { posts, loading } = useDiscussions(openBoardId);
 
