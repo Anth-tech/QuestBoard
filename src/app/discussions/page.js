@@ -34,8 +34,10 @@ export default function DiscussionPage() {
 
         <button
           style={styles.button}
-          onClick={() => post.setShowModal(true)}
-          disabled={!selectedBoard}
+          onClick={() => {
+            if (!selectedBoard) return;
+            post.setShowModal(true);
+          }}
           title={!selectedBoard ? "Select a board first" : ""}
         >
           + Create Post
