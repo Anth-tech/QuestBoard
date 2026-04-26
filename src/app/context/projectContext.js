@@ -5,7 +5,7 @@ import { useProjects as useProjectsHook } from "@/hooks/useProjects";
 
 const ProjectsContext = createContext(null);
 
-export function ProjectsProvider({ user, children }) {
+export function ProjectsProvider({children }) {
   const projectsState = useProjectsHook(user);
 
   return (
