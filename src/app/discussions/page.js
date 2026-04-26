@@ -13,18 +13,19 @@ export default function DiscussionPage() {
   const { boards } = useDiscussionBoards(projectId);
 
   const [openBoardId, setOpenBoardId] = useState(null);
-    const toggleBoard = (boardId) => {
+
+  const toggleBoard = (boardId) => {
     setOpenBoardId((prev) => (prev === boardId ? null : boardId));
-  };  
+  };
 
   const { posts, loading } = useDiscussions(openBoardId);
 
-  // Auto-select first board when boards load
+  // Auto-open first board when boards load
   useEffect(() => {
-    if (boards.length > 0 && !selectedBoard) {
-      setSelectedBoard(boards[0]);
+    if (boards.length > 0 && openBoardId === null) {
+      setOpenBoardId(boards[0].id);
     }
-  }, [boards]);
+  }, [boards, openBoardId]);
 
   return (
     <div style={styles.container}>
@@ -46,9 +47,7 @@ export default function DiscussionPage() {
           return (
             <div key={board.id} style={styles.boardWrapper}>
               <button
-                onClick={() =>
-                  setOpenBoardId(isOpen ? null : board.id)
-                }
+                onClick={() => toggleBoard(board.id)}
                 style={{
                   ...styles.boardHeader,
                   ...(isOpen ? styles.boardHeaderOpen : {}),
@@ -82,28 +81,6 @@ export default function DiscussionPage() {
         })}
       </div>
 
-      {/* Posts */}
-      <div style={styles.list}>
-        {loading ? (
-          <p style={{ color: "#9ca3af" }}>Loading posts...</p>
-        ) : posts.length === 0 ? (
-          <p style={{ color: "#9ca3af" }}>No posts yet.</p>
-        ) : (
-          posts.map((post) => (
-            <Link
-              key={post.id}
-              href={`/discussions/${post.id}`}
-              style={styles.post}
-            >
-              <span>{post.title}</span>
-
-              {/*<span style={styles.commentBadge}>
-                {post.commentCount}
-              </span>*/}
-            </Link>
-          ))
-        )}
-      </div>
     </div>
   );
 }
@@ -166,12 +143,10 @@ const styles = {
     cursor: "pointer",
   },
 
-
   post: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-
     padding: "12px",
     backgroundColor: "#f3f4f6",
     borderRadius: "6px",
