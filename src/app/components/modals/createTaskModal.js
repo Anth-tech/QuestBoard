@@ -53,7 +53,7 @@ export default function CreateTaskModal({
           {/* Assign Team Members */}
           <div style={styles.dropdownWrapper}>
             <details style={styles.details}>
-              <summary style={styles.select}>Assign Team Members ▾</summary>
+              <summary style={styles.select}>Assign Members</summary>
               <div style={styles.checkList}>
                 {members.length === 0 && (
                   <span style={styles.emptyLabel}>No members found</span>
@@ -131,11 +131,13 @@ const styles = {
     backgroundColor: "#1f2937",
     borderRadius: "12px",
     padding: "28px",
-    width: "500px",
+    width: "580px",
+    maxWidth: "90vw",
     display: "flex",
     flexDirection: "column",
     gap: "14px",
     position: "relative",
+    overflowY: "auto",
   },
   titleRow: { display: "flex", alignItems: "center", gap: "12px" },
   label: { color: "white", fontWeight: "bold", whiteSpace: "nowrap" },
@@ -148,7 +150,11 @@ const styles = {
     color: "white",
     fontSize: "14px",
   },
-  controlRow: { display: "flex", gap: "10px", alignItems: "flex-start" },
+  controlRow: { 
+    display: "flex", 
+    gap: "10px", 
+    alignItems: "flex-start",
+    flexWrap: "nowrap" },
   select: {
     backgroundColor: "#374151",
     color: "white",
@@ -157,7 +163,11 @@ const styles = {
     padding: "8px 14px",
     fontSize: "13px",
     cursor: "pointer",
-    flex: 1,
+    flex: "1 1 0",
+    minWidth: 0,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   dropdownWrapper: { flex: 1, position: "relative" },
   details: { width: "100%" },
