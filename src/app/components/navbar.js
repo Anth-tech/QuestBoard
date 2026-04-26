@@ -5,7 +5,7 @@ import LoginButton from "./loginButton";
 import LogoutButton from "./logoutButton";
 import CreateProjectModal from "./createProjectModal";
 import { useAuth } from "@/hooks/useAuth";
-import { useProjects } from "@/context/projectContext";
+import { useProjects } from "@/hooks/useProjects";
 
 export default function NavBar() {
   const { user, avatarUrl, displayName, initials } = useAuth();
@@ -20,7 +20,7 @@ export default function NavBar() {
     newProjectDesc,
     setNewProjectDesc,
     handleCreateProject,
-  } = useProjects();
+  } = useProjects(user);
 
   return (
     <aside style={styles.sidebar}>

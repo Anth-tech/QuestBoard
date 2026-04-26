@@ -1,18 +1,15 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/navbar";
-import { ProjectsProvider } from "@/context/projectContext";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <ProjectsProvider>
-          <NavBar />
-          <main style={{ marginLeft: "250px", padding: "20px" }}>
-            {children}
-          </main>
-        </ProjectsProvider>
+        <NavBar/>
+        <main style={{ marginLeft: "250px", padding: "20px" }}>
+          {children}
+        </main>
       </body>
     </html>
   );
