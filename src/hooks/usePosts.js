@@ -19,7 +19,7 @@ export function useDiscussions(boardId) {
 
       const { data, error } = await supabase
         .from("posts")
-        .select("id, title, project_id")
+        .select("id, title, board_id")
         .eq("board_id", boardId)
         .order("created_at", { ascending: false });
 
