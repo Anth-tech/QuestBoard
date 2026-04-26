@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDiscussionBoards } from "@/hooks/useBoards";
 import { useDiscussions } from "@/hooks/usePosts";
 import { useSearchParams } from "next/navigation";
+import { useCreatePost } from "@/hooks/useCreatePost";
+import { CreatePostModal } from "@/app/components/modals/createPostModal"
 
 export default function DiscussionPage() {
   const searchParams = useSearchParams();
@@ -15,7 +17,9 @@ export default function DiscussionPage() {
   const toggleBoard = (boardId) => {
     setOpenBoardId((prev) => (prev === boardId ? null : boardId));
   };
+  const selectedBoard = boards.find((b) => b.id === openBoardId) || null;
 
+  const post = useCreatePost(selectedBoard, user);
   const { posts, loading } = useDiscussions(openBoardId);
 
 
@@ -26,7 +30,12 @@ export default function DiscussionPage() {
       <div style={styles.header}>
         <h1>Discussion Boards</h1>
 
-        <button style={styles.button}>
+        <button
+          style={styles.button}
+          onClick={() => post.setShowModal(true)}
+          disabled={!selectedBoard}
+          title={!selectedBoard ? "Select a board first" : ""}
+        >
           + Create Post
         </button>
       </div>
@@ -72,6 +81,15 @@ export default function DiscussionPage() {
           );
         })}
       </div>
+      <CreatePostModal
+        showModal={post.showModal}
+        setShowModal={post.setShowModal}
+        title={post.title}
+        setTitle={post.setTitle}
+        content={post.content}
+        setContent={post.setContent}
+        handleCreatePost={post.handleCreatePost}
+      />
 
     </div>
   );
