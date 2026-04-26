@@ -41,7 +41,6 @@ export default function DiscussionPage() {
             }
             post.setShowModal(true);
           }}
-          title={!openBoardId ? "Select a board first" : ""}
         >
           + Create Post
         </button>

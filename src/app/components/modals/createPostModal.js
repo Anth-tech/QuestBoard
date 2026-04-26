@@ -10,7 +10,7 @@ export default function CreateTaskModal({
   setTaskDesc,
   handleCreateTask,
 }) {
-  if (!showModal || !selectedBoard) return null;
+  if (!showModal) return null;
 
   return (
     <div style={styles.modalOverlay} onClick={() => setShowModal(false)}>
