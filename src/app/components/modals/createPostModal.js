@@ -1,14 +1,14 @@
 "use client";
 
-export default function CreateTaskModal({
+export default function CreatePostModal({
   showModal,
   setShowModal,
   selectedBoard,
-  taskTitle,
-  setTaskTitle,
-  taskDesc,
-  setTaskDesc,
-  handleCreateTask,
+  title,
+  setTitle,
+  content,
+  setContent,
+  handleCreatePost,
 }) {
   if (!showModal) return null;
 
@@ -26,16 +26,16 @@ export default function CreateTaskModal({
         <label style={styles.modalLabel}>Title: *</label>
         <input
           style={styles.modalInput}
-          value={taskTitle}
-          onChange={(e) => setTaskTitle(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="Task title"
         />
 
         <label style={styles.modalLabel}>Description:</label>
         <textarea
           style={{ ...styles.modalInput, resize: "vertical", height: "80px" }}
-          value={taskDesc}
-          onChange={(e) => setTaskDesc(e.target.value)}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           placeholder="Optional description"
         />
 
