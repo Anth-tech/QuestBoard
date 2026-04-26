@@ -35,7 +35,10 @@ export default function DiscussionPage() {
         <button
           style={styles.button}
           onClick={() => {
-            if (!openBoardId) return;
+            if (!openBoardId) {
+              alert("Please select a board first");
+              return;
+            }
             post.setShowModal(true);
           }}
           title={!openBoardId ? "Select a board first" : ""}
