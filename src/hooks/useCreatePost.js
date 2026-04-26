@@ -16,7 +16,7 @@ export function useCreatePost(selectedBoard, user) {
       .insert({
         title: title.trim(),
         description: content.trim() || null,
-        board_id: selectedBoard.id,
+        board_id: selectedBoard,
         author_id: user?.id,
       })
       .select("id")
