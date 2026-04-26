@@ -52,9 +52,21 @@ export default function NavBar() {
               ))}
             </select>
           ) : (
-            <span style={styles.noProjects}>
-              {user ? "No projects yet" : "Sign in to see projects"}
-            </span>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            >
+              <span style={styles.noProjects}>
+                {user ? "No projects yet" : "Sign in to see projects"}
+              </span>
+              {user && (
+                <button
+                  onClick={() => setShowModal(true)}
+                  style={styles.createFirstButton}
+                >
+                  + New Project
+                </button>
+              )}
+            </div>
           )}
         </div>
 
@@ -141,8 +153,20 @@ const styles = {
     fontSize: "14px",
     width: "100%",
     cursor: "pointer",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   noProjects: { fontSize: "13px", color: "#6b7280", fontStyle: "italic" },
+  createFirstButton: {
+    background: "none",
+    border: "1px dashed #4b5563",
+    color: "#9ca3af",
+    borderRadius: "6px",
+    padding: "4px 8px",
+    fontSize: "13px",
+    cursor: "pointer",
+    textAlign: "left",
+  },
 
   nav: {
     display: "flex",
