@@ -11,6 +11,7 @@ export function useTasks(projectId) {
   const fetchTasks = async () => {
     if (!projectId) {
       setTasks([]);
+      setLoading(false);
       return;
     }
     setLoading(true);
@@ -50,6 +51,7 @@ export function useTasks(projectId) {
   useEffect(() => {
     if (!projectId) {
       setTasks([]);
+      setLoading(false);
       return;
     }
 

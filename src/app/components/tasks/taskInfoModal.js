@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/client";
+import { useEffect, useState } from "react";
 
 const supabase = createClient();
 
@@ -10,12 +11,13 @@ const PRIORITY_COLOR = {
   optional: "#9ca3af",
 };
 
-// returns a public URL for a file in the task-attachments bucket
-function getAttachmentUrl(taskId, filename) {
-  const { data } = supabase.storage
+// returns a signed url that'll be used to download task files
+async function getSignedUrl(taskId, filename) {
+  const { data, error } = await supabase.storage
     .from("task-attachments")
-    .getPublicUrl(`${taskId}/${filename}`);
-  return data?.publicUrl;
+    .createSignedUrl(`${taskId}/${filename}`, 60 * 60); // expires in 1 hour
+  if (error) { console.error("Signed URL error:", error.message); return null; }
+  return data?.signedUrl;
 }
 
 // used to determine which files are images so they can be displayed in the modal
@@ -26,6 +28,24 @@ function isImage(filename) {
 // creates a modal that displays the information of a task, users can assign themselves to a task and assignees can update the status
 export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatus, user, isOwner }) {
   if (!task) return null;
+
+  const [attachmentUrls, setAttachmentUrls] = useState({});
+
+  useEffect(() => {
+    if (!task?.attachments?.length) return;
+
+    const resolveUrls = async () => {
+      const entries = await Promise.all(
+        task.attachments.map(async (filename) => {
+          const url = await getSignedUrl(task.id, filename);
+          return [filename, url];
+        })
+      );
+      setAttachmentUrls(Object.fromEntries(entries));
+    };
+
+    resolveUrls();
+  }, [task]);
 
   const assignees = task.task_assignees ?? [];
   const isAssigned = assignees.some((a) => a.user_id === user?.id);
@@ -106,18 +126,32 @@ export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatu
         {task.attachments?.length > 0 && (
           <div style={styles.attachGrid}>
             {task.attachments.map((filename, i) => {
-              const url = getAttachmentUrl(task.id, filename);
+              const url = attachmentUrls[filename];
               return isImage(filename) ? (
-                <img
-                  key={i}
-                  src={url}
-                  alt={filename}
-                  style={styles.attachImg}
-                />
+                <div key={i} style={styles.attachImgWrapper}>
+                  {url && (
+                    <img src={url} alt={filename} style={styles.attachImg} />
+                  )}
+                  <a
+                    href={url}
+                    download={filename}
+                    style={styles.attachDownload}
+                  >
+                    ⬇ Download
+                  </a>
+                </div>
               ) : (
-                <a key={i} href={url} target="_blank" style={styles.attachFile}>
+                <a
+                  key={i}
+                  href={url}
+                  download={filename}
+                  style={styles.attachFile}
+                >
                   <div style={styles.attachIcon} />
-                  <span style={styles.attachName}>{filename}</span>
+                  <div>
+                    <span style={styles.attachName}>{filename}</span>
+                    <span style={styles.attachDownloadLabel}>⬇ Download</span>
+                  </div>
                 </a>
               );
             })}
@@ -219,11 +253,23 @@ const styles = {
     flexWrap: "wrap",
     marginBottom: "20px",
   },
+  attachImgWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px",
+    alignItems: "center",
+  },
   attachImg: {
     width: "80px",
     height: "80px",
     objectFit: "cover",
     borderRadius: "6px",
+  },
+  attachDownload: {
+    fontSize: "11px",
+    color: "#2563eb",
+    textDecoration: "none",
+    textAlign: "center",
   },
   attachFile: {
     backgroundColor: "#f3f4f6",
@@ -241,7 +287,13 @@ const styles = {
     backgroundColor: "#2563eb",
     borderRadius: "5px",
   },
-  attachName: { fontSize: "13px", fontWeight: 600, color: "#111" },
+  attachName: {
+    fontSize: "13px",
+    fontWeight: 600,
+    color: "#111",
+    display: "block",
+  },
+  attachDownloadLabel: { fontSize: "11px", color: "#2563eb" },
   takeTaskBtn: {
     display: "block",
     width: "100%",
@@ -253,14 +305,20 @@ const styles = {
     fontWeight: 600,
     cursor: "pointer",
   },
-    statusRow: {
-    display: "flex", alignItems: "center",
-    gap: "12px", marginBottom: "14px",
+  statusRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "14px",
   },
   statusLabel: { fontSize: "13px", color: "#374151", fontWeight: 600 },
   statusSelect: {
-    backgroundColor: "#f3f4f6", border: "1px solid #e5e7eb",
-    borderRadius: "6px", padding: "6px 10px",
-    fontSize: "13px", color: "#374151", cursor: "pointer",
+    backgroundColor: "#f3f4f6",
+    border: "1px solid #e5e7eb",
+    borderRadius: "6px",
+    padding: "6px 10px",
+    fontSize: "13px",
+    color: "#374151",
+    cursor: "pointer",
   },
 };
