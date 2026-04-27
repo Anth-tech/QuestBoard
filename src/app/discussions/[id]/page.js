@@ -1,31 +1,18 @@
 "use client";
 
 import { useDiscussion } from "@/hooks/discussions/usePost";
+import { usePostComments } from "@/hooks/discussions/usePostComments";
 import { useParams } from "next/navigation";
 
 export default function DiscussionDetails() {
   const params = useParams();
   const id = params?.id;
 
-  const { post, loading } = useDiscussion(id);
+  const { post, postLoading } = useDiscussion(id);
+  const { comments, commentsLoading } = usePostComments(id);
 
-  // Keep your placeholder comments
-  const comments = [
-    { id: 1, text: "Placeholder comment one." },
-    { id: 2, text: "Placeholder comment two." },
-    { id: 3, text: "Placeholder comment three." },
-    { id: 4, text: "Placeholder comment four." },
-    { id: 5, text: "Placeholder comment five." },
-    { id: 6, text: "Placeholder comment six." },
-    { id: 7, text: "Placeholder comment seven." },
-    { id: 8, text: "Placeholder comment eight." },
-    { id: 9, text: "Placeholder comment nine." },
-    { id: 10, text: "Placeholder comment ten." },
-    { id: 11, text: "Placeholder comment eleven." },
-    { id: 12, text: "Placeholder comment twelve." },
-  ];
 
-  if (loading) {
+  if (postLoading) {
     return <div style={{ padding: "20px" }}>Loading...</div>;
   }
 
@@ -56,26 +43,28 @@ export default function DiscussionDetails() {
       </div>
 
       {/* Comment Section */}
-      <div style={styles.commentSection}>
-        <div style={styles.commentList}>
-          {comments.map((c) => (
-            <div key={c.id} style={styles.comment}>
-              {c.text}
-            </div>
-          ))}
-        </div>
-
-        <div style={styles.inputWrapper}>
-          <div style={styles.inputBox}>
-            <input
-              placeholder="Write a comment..."
-              style={styles.input}
-            />
-            <button style={styles.button}>
-              Add Comment
-            </button>
+      <div style={styles.commentList}>
+        {commentsLoading ? (
+          <div style={{ padding: "10px", color: "#6b7280" }}>
+            Loading comments...
           </div>
-        </div>
+        ) : comments.length === 0 ? (
+          <div style={{ padding: "10px", color: "#6b7280" }}>
+            No comments yet
+          </div>
+        ) : (
+          comments.map((c) => (
+            <div key={c.id} style={styles.comment}>
+              <div style={{ fontWeight: 600 }}>
+                {c.profiles?.display_name || "Unknown"}
+              </div>
+              <div>{c.content}</div>
+              <div style={{ fontSize: "12px", color: "#9ca3af", marginTop: "5px" }}>
+                {new Date(c.created_at).toLocaleString()}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
