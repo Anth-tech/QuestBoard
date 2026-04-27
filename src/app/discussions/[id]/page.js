@@ -1,6 +1,6 @@
 "use client";
 
-import { useDiscussion } from "@/hooks/discussions/useDiscussion";
+import { useDiscussion } from "@/hooks/discussions/usePost";
 
 export default function DiscussionDetails({ params }) {
   const { id } = params;
@@ -48,7 +48,7 @@ export default function DiscussionDetails({ params }) {
         <p style={styles.content}>{post.description}</p>
       </div>
 
-      {/* Comment Section (unchanged) */}
+      {/* Comment Section */}
       <div style={styles.commentSection}>
         <div style={styles.commentList}>
           {comments.map((c) => (
@@ -80,7 +80,7 @@ const styles = {
     color: "#6b7280",
     fontSize: "14px",
   },
-  
+
   page: {
     height: "100vh",
     display: "flex",
