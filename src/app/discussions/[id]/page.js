@@ -28,7 +28,12 @@ export default function DiscussionDetails({ params }) {
   }
 
   if (!post) {
-    return <div style={{ padding: "20px" }}>Post not found</div>;
+    return (
+      <div style={{ padding: "20px" }}>
+        Post not found<br />
+        <small>ID: {id}</small>
+      </div>
+    )
   }
 
   return (
