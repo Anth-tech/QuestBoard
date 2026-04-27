@@ -1,9 +1,11 @@
 "use client";
 
 import { useDiscussion } from "@/hooks/discussions/usePost";
+import { useParams } from "next/navigation";
 
-export default function DiscussionDetails({ params }) {
-  const { id } = params;
+export default function DiscussionDetails() {
+  const params = useParams();
+  const id = params?.id;
 
   const { post, loading } = useDiscussion(id);
 
