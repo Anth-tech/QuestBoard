@@ -1,21 +1,13 @@
 "use client";
-import { use } from "react";
+
+import { useDiscussion } from "@/hooks/discussions/useDiscussion";
 
 export default function DiscussionDetails({ params }) {
-  const { id } = use(params);
+  const { id } = params;
 
-  const post = {
-    id: id,
-    title: "Placeholder Discussion Title",
-    content:
-      "This page is very much a placeholder for until we actually get the backend set up",
-    images: [
-      "https://via.placeholder.com/600x300?text=Placeholder+Image",
-      "https://via.placeholder.com/600x300?text=Placeholder+Image",
-    ],
-  };
+  const { post, loading } = useDiscussion(id);
 
-  //Placeholders for the comments
+  // Keep your placeholder comments
   const comments = [
     { id: 1, text: "Placeholder comment one." },
     { id: 2, text: "Placeholder comment two." },
@@ -31,23 +23,33 @@ export default function DiscussionDetails({ params }) {
     { id: 12, text: "Placeholder comment twelve." },
   ];
 
+  if (loading) {
+    return <div style={{ padding: "20px" }}>Loading...</div>;
+  }
+
+  if (!post) {
+    return <div style={{ padding: "20px" }}>Post not found</div>;
+  }
+
   return (
     <div style={styles.page}>
+      {/* Post Section */}
       <div style={styles.postSection}>
         <h1 style={styles.title}>{post.title}</h1>
 
-        <p style={styles.content}>{post.content}</p>
+        {/* Author + Date */}
+        <p style={styles.meta}>
+          Posted by{" "}
+          <strong>{post.profiles?.username || "Unknown"}</strong> •{" "}
+          {new Date(post.created_at).toLocaleString()}
+        </p>
 
-        <div style={styles.imageGrid}>
-          {post.images.map((img, i) => (
-            <img key={i} src={img} style={styles.image} />
-          ))}
-        </div>
+        {/* Content */}
+        <p style={styles.content}>{post.description}</p>
       </div>
 
+      {/* Comment Section (unchanged) */}
       <div style={styles.commentSection}>
-        
-        {/*Scrollable comments*/}
         <div style={styles.commentList}>
           {comments.map((c) => (
             <div key={c.id} style={styles.comment}>
@@ -56,14 +58,12 @@ export default function DiscussionDetails({ params }) {
           ))}
         </div>
 
-        {/*add comment section*/}
         <div style={styles.inputWrapper}>
           <div style={styles.inputBox}>
             <input
               placeholder="Write a comment..."
               style={styles.input}
             />
-
             <button style={styles.button}>
               Add Comment
             </button>
@@ -75,6 +75,12 @@ export default function DiscussionDetails({ params }) {
 }
 
 const styles = {
+  meta: {
+    marginBottom: "15px",
+    color: "#6b7280",
+    fontSize: "14px",
+  },
+  
   page: {
     height: "100vh",
     display: "flex",
