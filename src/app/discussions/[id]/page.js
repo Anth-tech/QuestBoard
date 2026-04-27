@@ -1,7 +1,7 @@
 "use client";
 
 import { useDiscussion } from "@/hooks/discussions/usePost";
-import { usePostComments } from "@/hooks/discussions/usePostComments";
+import { usePostComments } from "@/hooks/discussions/useComments";
 import { useParams } from "next/navigation";
 
 export default function DiscussionDetails() {
