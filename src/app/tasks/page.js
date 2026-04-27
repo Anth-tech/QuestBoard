@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { useTaskActions } from "@/hooks/tasks/useTaskActions";
 import { useProjects } from "@/hooks/useProjects";
+import { useModifyTasks } from "@/hooks/tasks/useModifyTasks";
 import SortTasksDropdown from "@/app/components/tasks/sortTasksDropdown";
 import TaskCard from "@/app/components/tasks/taskCard";
 import TaskInfoModal from "@/app/components/tasks/taskInfoModal";
@@ -15,7 +16,7 @@ const PRIORITY_ORDER = { urgent: 0, high: 1, medium: 2, low: 3, optional: 4 };
  
 // ranks used for sorting by status
 const STATUS_ORDER = { not_started: 0, in_progress: 1, completed: 2 };
-
+ 
 /** sortTasks returns a sorted copy of the task array based on the selected field. does not mutate the original array.
   
    @param {Array} tasks - the full list of tasks to sort
@@ -28,14 +29,12 @@ function sortTasks(tasks, sortBy) {
   return [...tasks].sort((a, b) => {
     switch (sortBy) {
       case "deadline":
-        // parse mm/dd/yy strings into date objects for comparison
         return new Date(a.deadline) - new Date(b.deadline);
       case "priority":
         return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
       case "status":
         return STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
       case "title":
-        // alphabetical sort
         return a.title.localeCompare(b.title);
       default:
         return 0;
@@ -47,13 +46,14 @@ function sortTasks(tasks, sortBy) {
 export default function Tasks() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get("project");
-
+ 
   const { user } = useAuth();
   const { selectedProject } = useProjects(user);
   const { tasks, loading, refetch } = useTasks(projectId);
   const { takeTask, updateStatus } = useTaskActions(user, refetch);
+  const { editTask, deleteTask } = useModifyTasks(refetch);
   const isOwner = user?.id === selectedProject?.owner_id;
-
+ 
   // null -> no modal is open
   const [selectedTask, setSelectedTask] = useState(null);
   const [search, setSearch] = useState("");
@@ -71,13 +71,23 @@ export default function Tasks() {
   const completed = tasks.filter((t) => t.status === "completed").length;
   const progress = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
  
+  // after an edit, refetch then re-point selectedTask at the fresh version of the
+  // same task so the modal immediately reflects the updated fields and attachments
+  const handleEdit = async (updatedTask) => {
+    await editTask(updatedTask);
+    // refetch is called inside editTask, but tasks state won't have updated yet —
+    // call it again and await so we get the fresh list back to find the task
+    const freshTasks = await refetch();
+    const refreshed = (freshTasks ?? []).find((t) => t.id === updatedTask.id);
+    if (refreshed) setSelectedTask(refreshed);
+  };
+ 
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <h1 style={styles.heading}>Tasks</h1>
         <div style={styles.progressWrap}>
           <div style={styles.progressTrack}>
-            {/* width is set inline so it can be dynamic */}
             <div style={{ ...styles.progressFill, width: `${progress}%` }} />
           </div>
           <span style={styles.progressLabel}>{progress}%</span>
@@ -123,6 +133,11 @@ export default function Tasks() {
           }}
           onUpdateStatus={async (taskId, status) => {
             await updateStatus(taskId, status);
+            setSelectedTask(null);
+          }}
+          onEdit={handleEdit}
+          onDelete={async (task) => {
+            await deleteTask(task.id);
             setSelectedTask(null);
           }}
         />
