@@ -25,7 +25,7 @@ export function useDiscussion(postId) {
         description, 
         profiles:author_id (
             id,
-            username,
+            display_name,
             avatar_url
         ), 
         created_at`)
