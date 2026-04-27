@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { useDiscussionBoards } from "@/hooks/useDiscussionBoards";
-import { useDiscussions } from "@/hooks/usePosts";
+import { useDiscussionBoards } from "@/hooks/discussions/useDiscussionBoards";
+import { useDiscussions } from "@/hooks/discussions/usePosts";
 import { useSearchParams } from "next/navigation";
-import { useCreatePost } from "@/hooks/useCreatePost";
+import { useCreatePost } from "@/hooks/discussions/useCreatePost";
 import { useAuth } from "@/hooks/useAuth";
-import CreatePostModal from "@/app/components/modals/createPostModal"
+import CreatePostModal from "@/app/components/discussions/createPostModal"
 
 export default function DiscussionPage() {
   const searchParams = useSearchParams();
