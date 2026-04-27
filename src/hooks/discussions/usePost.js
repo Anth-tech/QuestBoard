@@ -23,6 +23,11 @@ export function useDiscussion(postId) {
       .select(`id,
         title, 
         description, 
+        profiles:author_id (
+            id,
+            display_name,
+            avatar_url
+        ), 
         created_at`)
       .eq("id", postId)
       .single();

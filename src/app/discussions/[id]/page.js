@@ -47,7 +47,7 @@ export default function DiscussionDetails() {
         {/* Author + Date */}
         <p style={styles.meta}>
           Posted by{" "}
-          <strong>{/*post.profiles?.display_name ||*/} "Unknown"</strong> •{" "}
+          <strong>{post.profiles?.display_name || "Unknown"}</strong> •{" "}
           {new Date(post.created_at).toLocaleString()}
         </p>
 
