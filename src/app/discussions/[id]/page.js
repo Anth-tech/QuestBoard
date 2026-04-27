@@ -2,14 +2,19 @@
 
 import { useDiscussion } from "@/hooks/discussions/usePost";
 import { usePostComments } from "@/hooks/comments/useComments";
+import { useCreateComment } from "@/hooks/comments/useCreateComment";
+import CreateCommentModal from "@/app/components/comments/createCommentModal";
+import { useAuth } from "@/hooks/useAuth";
 import { useParams } from "next/navigation";
 
 export default function DiscussionDetails() {
   const params = useParams();
   const id = params?.id;
 
+  const { user } = useAuth();
   const { post, loading } = useDiscussion(id);
-  const { comments, loading: commentsLoading } = usePostComments(id);
+  const { comments, loading: commentsLoading, refetch: refetchComments, } = usePostComments(id);
+  const comment = useCreateComment(id, user, refetchComments);
 
   if (loading) {
     return <div style={{ padding: "20px" }}>Loading...</div>;
@@ -21,27 +26,37 @@ export default function DiscussionDetails() {
         Post not found<br />
         <small>ID: {id}</small>
       </div>
-    )
+    );
   }
 
   return (
     <div style={styles.page}>
-      {/* Post Section */}
+      {/* POST SECTION */}
       <div style={styles.postSection}>
         <h1 style={styles.title}>{post.title}</h1>
 
-        {/* Author + Date */}
         <p style={styles.meta}>
           Posted by{" "}
           <strong>{post.profiles?.display_name || "Unknown"}</strong> •{" "}
           {new Date(post.created_at).toLocaleString()}
         </p>
 
-        {/* Content */}
         <p style={styles.content}>{post.description}</p>
       </div>
 
-      {/* Comment Section */}
+      {/* COMMENTS HEADER */}
+      <div style={styles.commentHeader}>
+        <h2 style={styles.commentTitle}>Comments</h2>
+
+        <button
+          style={styles.button}
+          onClick={() => comment.setShowModal(true)}
+        >
+          + Add Comment
+        </button>
+      </div>
+
+      {/* COMMENT LIST */}
       <div style={styles.commentList}>
         {commentsLoading ? (
           <div style={{ padding: "10px", color: "#6b7280" }}>
@@ -65,17 +80,21 @@ export default function DiscussionDetails() {
           ))
         )}
       </div>
+
+      {/* COMMENT MODAL */}
+      <CreateCommentModal
+        showModal={comment.showModal}
+        setShowModal={comment.setShowModal}
+        content={comment.content}
+        setContent={comment.setContent}
+        handleCreateComment={comment.handleCreateComment}
+      />
     </div>
   );
 }
 
-const styles = {
-  meta: {
-    marginBottom: "15px",
-    color: "#6b7280",
-    fontSize: "14px",
-  },
 
+const styles = {
   page: {
     height: "100vh",
     display: "flex",
@@ -88,28 +107,36 @@ const styles = {
     borderBottom: "1px solid #e5e7eb",
     overflowY: "auto",
   },
+
   title: {
     marginBottom: "10px",
   },
+
+  meta: {
+    marginBottom: "15px",
+    color: "#6b7280",
+    fontSize: "14px",
+  },
+
   content: {
     marginBottom: "20px",
     color: "#374151",
   },
-  imageGrid: {
+
+  commentHeader: {
     display: "flex",
-    gap: "10px",
-    flexWrap: "wrap",
-  },
-  image: {
-    width: "300px",
-    borderRadius: "8px",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "15px",
+    backgroundColor: "#f9fafb",
+    borderBottom: "1px solid #e5e7eb",
   },
 
-  commentSection: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden", // important
+  commentTitle: {
+    margin: 0,
+    fontSize: "16px",
+    fontWeight: "600",
+    color: "#111827",
   },
 
   commentList: {
@@ -117,12 +144,6 @@ const styles = {
     overflowY: "auto",
     padding: "15px",
     backgroundColor: "#f9fafb",
-  },
-
-  inputWrapper: {
-    padding: "15px",
-    backgroundColor: "white",
-    borderTop: "1px solid #e5e7eb",
   },
 
   comment: {
@@ -133,35 +154,13 @@ const styles = {
     border: "1px solid #e5e7eb",
   },
 
-  inputWrapper: {
-    padding: "15px",
-    backgroundColor: "white",
-    borderTop: "1px solid #e5e7eb",
-  },
-
-  inputBox: {
-    display: "flex",
-    gap: "10px",
-    padding: "10px",
-    backgroundColor: "white",
-    borderRadius: "10px",
-    border: "1px solid #e5e7eb",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.05)",
-  },
-
-  input: {
-    flex: 1,
-    padding: "10px",
-    borderRadius: "6px",
-    border: "1px solid #d1d5db",
-  },
-
   button: {
-    padding: "10px 15px",
     backgroundColor: "#2563eb",
     color: "white",
     border: "none",
+    padding: "8px 12px",
     borderRadius: "6px",
     cursor: "pointer",
+    fontSize: "14px",
   },
 };
