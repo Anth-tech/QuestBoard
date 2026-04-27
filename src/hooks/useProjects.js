@@ -54,18 +54,28 @@ export function useProjects(user) {
       owner_id: user.id,
     });
 
-    console.log("error:", error);
-
     if (!error) {
       // refetch full list so new project's id is included
       const { data: owned } = await supabase
         .from("projects")
-        .select("id, name")
-        .eq("owner_id", user.id);
+        .select("id, name, owner_id")
+        .eq("owner_id", user.id)
+        .order("created_at", { ascending: false });
 
-      const newProject = owned?.find((p) => p.name === newProjectName);
-      setProjects((prev) => [...prev, newProject]);
-      setSelectedProject(newProject);
+      if (owned) {
+        const { data: memberships } = await supabase
+          .from("project_members")
+          .select("project_id, projects(id, name, owner_id)")
+          .eq("user_id", user.id);
+
+        const memberProjects = memberships?.map((m) => m.projects) ?? [];
+        const all = [...owned, ...memberProjects];
+        const unique = Array.from(new Map(all.map((p) => [p.id, p])).values());
+
+        setProjects(unique);
+        setSelectedProject(owned[0]); // ← newest project is first due to descending order
+      }
+
       setNewProjectName("");
       setNewProjectDesc("");
       setShowModal(false);
