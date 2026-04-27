@@ -1,18 +1,17 @@
 "use client";
 
 import { useDiscussion } from "@/hooks/discussions/usePost";
-import { usePostComments } from "@/hooks/discussions/useComments";
+import { usePostComments } from "@/hooks/discussions/usePostComments";
 import { useParams } from "next/navigation";
 
 export default function DiscussionDetails() {
   const params = useParams();
   const id = params?.id;
 
-  const { post, postLoading } = useDiscussion(id);
-  const { comments, commentsLoading } = usePostComments(id);
+  const { post, loading } = useDiscussion(id);
+  const { comments, loading: commentsLoading } = usePostComments(id);
 
-
-  if (postLoading) {
+  if (loading) {
     return <div style={{ padding: "20px" }}>Loading...</div>;
   }
 
