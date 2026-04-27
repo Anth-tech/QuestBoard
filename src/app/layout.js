@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBar from "./components/navbar";
+import NavBar from "./components/navbar/navbar";
 import { Suspense } from "react";
 
 export default function RootLayout({ children }) {

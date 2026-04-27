@@ -23,7 +23,7 @@ export function useCreateTask(selectedProject, user) {
         .select("user_id, profiles(id, display_name)")
         .eq("project_id", selectedProject.id);
 
-      // also includes the owner
+      // includes owner
       const { data: ownerData } = await supabase
         .from("profiles")
         .select("id, display_name")
@@ -68,6 +68,15 @@ export function useCreateTask(selectedProject, user) {
     if (error) {
       console.error(error);
       return;
+    }
+
+    // uploads given attachments to supabase
+    if (attachment) {
+      const { error: uploadError } = await supabase.storage
+        .from("task-attachments")
+        .upload(`${task.id}/${attachment.name}`, attachment);
+      
+      if (uploadError) console.error("Upload failed:", uploadError.message);
     }
 
     // insert assignees

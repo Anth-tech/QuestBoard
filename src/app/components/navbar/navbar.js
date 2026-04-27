@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import LoginButton from "./buttons/loginButton";
-import LogoutButton from "./buttons/logoutButton";
-import FloatingActionButton from "./buttons/floatingActionButton";
-import CreateProjectModal from "./modals/createProjectModal";
+import LoginButton from "@/app/components/navbar/loginButton";
+import LogoutButton from "@/app/components/navbar/logoutButton";
+import FloatingActionButton from "@/app/components/navbar/floatingActionButton";
+import CreateProjectModal from "@/app/components/navbar/createProjectModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useProjects } from "@/hooks/useProjects";
 import { useSearchParams, useRouter } from "next/navigation";

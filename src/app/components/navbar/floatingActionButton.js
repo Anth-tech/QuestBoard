@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import CreateTaskModal from "../modals/createTaskModal";
-import CreateDiscussionModal from "../modals/createDiscussionModal";
-import { useCreateTask } from "@/hooks/useCreateTask";
-import { useCreateDiscussion } from "@/hooks/useCreateDiscussion";
+import CreateTaskModal from "@/app/components/tasks/createTaskModal";
+import CreateDiscussionModal from "@/app/components/discussions/createDiscussionModal";
+import { useCreateTask } from "@/hooks/tasks/useCreateTask";
+import { useCreateDiscussion } from "@/hooks/discussions/useCreateDiscussion";
 
 export default function FloatingActionButton({ user, selectedProject }) {
   const [hovered, setHovered] = useState(false);
