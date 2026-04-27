@@ -3,7 +3,7 @@ import { createClient } from "@/lib/client";
 
 const supabase = createClient();
 
-export function useDiscussions(boardId) {
+export function useDiscussion(boardId) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
