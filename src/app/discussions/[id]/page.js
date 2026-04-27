@@ -9,7 +9,7 @@ export default function DiscussionDetails() {
   const id = params?.id;
 
   const { post, loading } = useDiscussion(id);
-  const { comments, loading: commentsLoading } = usePostComments(id);
+  const { comments, loading: commentsLoading } = useComments(id);
 
   if (loading) {
     return <div style={{ padding: "20px" }}>Loading...</div>;
