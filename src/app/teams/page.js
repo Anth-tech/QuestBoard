@@ -65,12 +65,8 @@ export default function TeamsPage() {
                       <p style={{ color: "#9ca3af" }}>No members yet.</p>
                     ) : (
                       members.map((member) => (
-                        <div key={member.user_id} style={styles.memberItem}>
-                          <span style={styles.memberEmail}>
-                            {member.users?.user_metadata?.full_name ||
-                              member.users?.email ||
-                              "Unknown User"}
-                          </span>
+                        <div key={member.profiles.id} style={styles.memberItem}>
+                          <span style={styles.memberName}>{member.profiles.display_name}</span>
                           <span style={styles.memberRole}>{member.role}</span>
                         </div>
                       ))
@@ -154,7 +150,7 @@ const styles = {
     borderRadius: "4px",
     marginBottom: "8px",
   },
-  memberEmail: {
+  memberName: {
     color: "#374151",
   },
   memberRole: {

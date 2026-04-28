@@ -60,7 +60,14 @@ export function useTeamMembers(teamId) {
 
     const { data, error } = await supabase
       .from("team_members")
-      .select("user_id, role, users (id, email, user_metadata)")
+      .select(
+        `
+        role,
+        profiles (
+        id, display_name
+        )
+      `,
+      )
       .eq("team_id", teamId);
 
     if (!error) {
