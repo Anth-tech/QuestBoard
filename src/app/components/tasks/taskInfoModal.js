@@ -66,7 +66,7 @@ export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatu
  
   // formats deadline for view mode
   const deadline = task.deadline
-    ? new Date(task.deadline).toLocaleDateString("en-US", {
+    ? new Date(task.deadline.slice(0, 10) + "T00:00:00").toLocaleDateString("en-US", {
         month: "2-digit",
         day: "2-digit",
         year: "2-digit",
