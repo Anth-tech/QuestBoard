@@ -22,8 +22,7 @@ export function useDeadlineAlerts(tasks, loading) {
     tasks.forEach((task) => {
       if (!task.deadline || task.status === "completed") return;
  
-      const deadline = new Date(task.deadline);
-      deadline.setHours(0, 0, 0, 0);
+      const deadline = new Date(task.deadline.slice(0, 10) + "T00:00:00");
  
       const daysUntil = Math.round((deadline - today) / (1000 * 60 * 60 * 24));
       if (![0, 1, 2].includes(daysUntil)) return;
@@ -31,7 +30,7 @@ export function useDeadlineAlerts(tasks, loading) {
       found.push({ task, daysUntil, ...ALERT_STYLE[daysUntil] });
     });
  
-    // sort by urgency — today first
+    // sort by urgency - today is first
     found.sort((a, b) => a.daysUntil - b.daysUntil);
  
     if (found.length > 0) {

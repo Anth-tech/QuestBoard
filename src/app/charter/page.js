@@ -85,8 +85,8 @@ export default function CalendarPage() {
     return tasks.map((task) => ({
       id: task.id,
       title: task.title,
-      start: new Date(task.deadline),
-      end: new Date(new Date(task.deadline).getTime() + 60 * 60 * 1000),
+      start: new Date(task.deadline.slice(0, 10) + "T00:00:00"),
+      end: new Date(task.deadline.slice(0, 10) + "T01:00:00"),
       // jerry rig fix to add a new duration so box isn't crunched up that only half works
       resource: task, // stores full task for click handler
     }));
