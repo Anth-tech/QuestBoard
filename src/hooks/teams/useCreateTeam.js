@@ -4,10 +4,11 @@ import { useState } from "react";
 const supabase = createClient();
 
 export default function useCreateTeam(user) {
+  const [showModal, setShowModal] = useState(false);
   const [teamName, setTeamName] = useState("");
 
-  const handleCreate = async () => {
-    if (!teamName) return;
+  const handleCreateTeam = async () => {
+    if (!teamName || !user) return;
 
     const { data: team, error } = await supabase
       .from("teams")
@@ -28,17 +29,15 @@ export default function useCreateTeam(user) {
       },
     ]);
 
-    setTeamName('');
+    setTeamName("");
+    setShowModal(false);
   };
 
-  return (
-    <div>
-        <input
-            value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
-            placeholder="Team name"
-        />
-        <button onClick={handleCreate}>Create Team</button>
-    </div>
-  );
+  return {
+    showModal,
+    setShowModal,
+    teamName,
+    setTeamName,
+    handleCreateTeam,
+  };
 }
