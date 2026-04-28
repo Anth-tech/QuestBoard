@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./components/navbar/navbar";
 import { ProjectProvider } from "@/app/context/ProjectContext";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,10 +24,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <ProjectProvider>
-          <NavBar />
-          <main style={{ marginLeft: "250px", padding: "20px" }}>
-            {children}
-          </main>
+          <Suspense>
+            <NavBar />
+            <main style={{ marginLeft: "250px", padding: "20px" }}>
+              {children}
+            </main>
+          </Suspense>
         </ProjectProvider>
       </body>
     </html>

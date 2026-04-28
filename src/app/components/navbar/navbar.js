@@ -118,9 +118,9 @@ export default function NavBar() {
 
         {user ? <LogoutButton /> : <LoginButton />}
 
-        <Link href="/settings" style={styles.link}>
+        {/* <Link href="/settings" style={styles.link}>
           ⚙️ Settings
-        </Link>
+        </Link> */}
       </div>
 
       {/* Floating action button for project owner to create tasks/discussions */}
