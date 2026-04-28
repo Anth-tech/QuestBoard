@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCreateTeam } from "@/hooks/teams/useCreateTeam";
+import useCreateTeam  from "@/hooks/teams/useCreateTeam";
 import { useTeamList, useTeamMembers } from "@/hooks/teams/useTeamList";
 import { useAuth } from "@/hooks/useAuth";
 import CreateTeamModal from "@/app/components/teams/createTeamModal";
