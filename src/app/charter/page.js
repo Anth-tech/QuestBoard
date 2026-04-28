@@ -29,13 +29,9 @@ const PRIORITY_COLOR = {
   optional: "#9ca3af",
 };
  
-/**
- * DeadlineModal
- * popup listing all tasks due in 0, 1, or 2 days.
- * auto-shown on page load by useDeadlineAlerts.
- *
- * @param {Array} alerts - alert objects from useDeadlineAlerts
- * @param {Function} onClose - closes the modal
+/** DeadlineModalpopup listing all tasks due in 0, 1, or 2 days. auto-shown on page load by useDeadlineAlerts.
+   @param {Array} alerts - alert objects from useDeadlineAlerts
+   @param {Function} onClose - closes the modal
  */
 function DeadlineModal({ alerts, onClose }) {
   return (
