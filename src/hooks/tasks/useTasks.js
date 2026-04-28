@@ -20,7 +20,7 @@ export function useTasks(projectId) {
       .from("tasks")
       .select(
         `
-        id, title, description, status, priority, reward, deadline,
+        id, title, description, status, priority, reward, deadline, folder_id,
         task_assignees ( user_id, profiles ( id, display_name ) )
       `,
       )

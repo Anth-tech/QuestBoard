@@ -26,7 +26,7 @@ function isImage(filename) {
 }
  
 // creates a modal that displays the information of a task, users can assign themselves to a task and assignees can update the status
-export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatus, onDelete, onEdit, user, isOwner }) {
+export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatus, onDelete, onEdit, user, isOwner, folders = [], onAssignFolder }) {
   if (!task) return null;
  
   const [attachmentUrls, setAttachmentUrls] = useState({});
@@ -36,6 +36,7 @@ export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatu
     description: task.description ?? "",
     priority: task.priority ?? "medium",
     deadline: task.deadline ? task.deadline.split("T")[0] : "",
+    folder_id: task.folder_id ?? "",
   });
   // existing filenames the user wants to keep (starts as the full current list)
   const [keptAttachments, setKeptAttachments] = useState(task.attachments ?? []);
@@ -109,6 +110,7 @@ export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatu
     await onEdit({
       ...task,
       ...editForm,
+      folder_id: editForm.folder_id || null,
       // pass both lists so the hook can diff and act
       keptAttachments,
       newFiles,
@@ -123,6 +125,7 @@ export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatu
       description: task.description ?? "",
       priority: task.priority ?? "medium",
       deadline: task.deadline ? task.deadline.split("T")[0] : "",
+      folder_id: task.folder_id ?? "",
     });
     setKeptAttachments(task.attachments ?? []);
     setNewFiles([]);
@@ -184,6 +187,22 @@ export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatu
                 />
               </div>
             </div>
+ 
+            {folders.length > 0 && (
+              <div style={styles.fieldGroup}>
+                <label style={styles.fieldLabel}>Folder</label>
+                <select
+                  style={styles.fieldSelect}
+                  value={editForm.folder_id}
+                  onChange={(e) => handleEditChange("folder_id", e.target.value)}
+                >
+                  <option value="">No folder</option>
+                  {folders.map((f) => (
+                    <option key={f.id} value={f.id}>{f.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
  
             {/* ── Attachments section ── */}
             <div style={styles.fieldGroup}>
@@ -280,6 +299,12 @@ export default function TaskInfoModal({ task, onClose, onTakeTask, onUpdateStatu
               <span style={styles.modalMetaItem}>
                 <strong>Deadline:</strong> {deadline}
               </span>
+              {folders.length > 0 && (
+                <span style={styles.modalMetaItem}>
+                  <strong>Folder:</strong>{" "}
+                  {folders.find((f) => f.id === task.folder_id)?.name ?? "None"}
+                </span>
+              )}
               {task.reward > 0 && (
                 <span style={styles.modalMetaItem}>
                   <strong>Reward:</strong> {task.reward} pts
