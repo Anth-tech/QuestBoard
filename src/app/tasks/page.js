@@ -85,10 +85,6 @@ function NewFolderInput({ onCreate }) {
         placeholder="Folder name..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleSubmit();
-          if (e.key === "Escape") setVisible(false);
-        }}
       />
       <button style={styles.newFolderConfirm} onClick={handleSubmit}>Add</button>
       <button style={styles.newFolderCancel} onClick={() => setVisible(false)}>Cancel</button>
@@ -116,9 +112,12 @@ export default function Tasks() {
     t.title.toLowerCase().includes(search.toLowerCase())
   );
   const sorted = sortTasks(filtered, sortBy);
- 
-  const completed = tasks.filter((t) => t.status === "completed").length;
-  const progress = tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0;
+
+ /** Task weight logic */
+  const WEIGHT = { urgent: 5, high: 4, medium: 3, low: 2, optional: 1 };
+  const totalWeight = tasks.reduce((sum, t) => sum + (WEIGHT[t.priority] ?? 3), 0);
+  const completedWeight = tasks.filter((t) => t.status === "completed").reduce((sum, t) => sum + (WEIGHT[t.priority] ?? 3), 0);
+  const progress = totalWeight > 0 ? Math.round((completedWeight / totalWeight) * 100) : 0;
  
   const handleEdit = async (updatedTask) => {
     await editTask(updatedTask);
