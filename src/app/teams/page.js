@@ -27,6 +27,10 @@ export default function TeamsPage() {
         <button
           style={styles.button}
           onClick={() => {
+            if (!user) {
+              alert("Please sign in to create a team");
+              return;
+            }
             createTeam.setShowModal(true);
           }}
         >
