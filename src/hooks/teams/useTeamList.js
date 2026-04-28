@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const supabase = createClient();
 
