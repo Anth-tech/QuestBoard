@@ -5,25 +5,19 @@ import LoginButton from "@/app/components/navbar/loginButton";
 import LogoutButton from "@/app/components/navbar/logoutButton";
 import FloatingActionButton from "@/app/components/navbar/floatingActionButton";
 import CreateProjectModal from "@/app/components/navbar/createProjectModal";
-import { useAuth } from "@/hooks/useAuth";
-import { useProjects } from "@/hooks/useProjects";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useProjectContext } from "@/app/context/ProjectContext";
 
 export default function NavBar() {
-  const { user, avatarUrl, displayName, initials } = useAuth();
   const {
-    projects,
-    selectedProject,
-    setSelectedProject,
-    showModal,
-    setShowModal,
-    newProjectName,
-    setNewProjectName,
-    newProjectDesc,
-    setNewProjectDesc,
+    user, avatarUrl, displayName, initials,
+    projects, selectedProject, setSelectedProject,
+    showModal, setShowModal,
+    newProjectName, setNewProjectName,
+    newProjectDesc, setNewProjectDesc,
     handleCreateProject,
-  } = useProjects(user);
+  } = useProjectContext();
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectIdFromUrl = searchParams.get("project");
@@ -130,10 +124,7 @@ export default function NavBar() {
       </div>
 
       {/* Floating action button for project owner to create tasks/discussions */}
-      <FloatingActionButton
-        user={user}
-        selectedProject={selectedProject}
-      />
+      <FloatingActionButton />
     </aside>
   );
 }

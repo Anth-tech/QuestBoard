@@ -6,8 +6,10 @@ import CreateTaskModal from "@/app/components/tasks/createTaskModal";
 import CreateDiscussionModal from "@/app/components/discussions/createDiscussionModal";
 import { useCreateTask } from "@/hooks/tasks/useCreateTask";
 import { useCreateDiscussion } from "@/hooks/discussions/useCreateDiscussion";
+import { useProjectContext } from "@/app/context/ProjectContext";
 
-export default function FloatingActionButton({ user, selectedProject }) {
+export default function FloatingActionButton() {
+  const { user, selectedProject } = useProjectContext();
   const [hovered, setHovered] = useState(false);
   const pathname = usePathname();
 

@@ -5,10 +5,9 @@ import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { useSearchParams } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
-import { useProjects } from "@/hooks/useProjects";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { useTaskActions } from "@/hooks/tasks/useTaskActions";
+import { useProjectContext } from "@/app/context/ProjectContext";
 import TaskInfoModal from "@/app/components/tasks/taskInfoModal";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -32,8 +31,7 @@ export default function CalendarPage() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get("project");
 
-  const { user } = useAuth();
-  const { selectedProject } = useProjects(user);
+  const { user, selectedProject } = useProjectContext();
   const { tasks, loading, refetch } = useTasks(projectId);
   const { takeTask, updateStatus } = useTaskActions(user, refetch);
   const isOwner = user?.id === selectedProject?.owner_id;

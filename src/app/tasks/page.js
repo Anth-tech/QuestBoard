@@ -2,11 +2,10 @@
  
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { useTaskActions } from "@/hooks/tasks/useTaskActions";
-import { useProjects } from "@/hooks/useProjects";
 import { useModifyTasks } from "@/hooks/tasks/useModifyTasks";
+import { useProjectContext } from "@/app/context/ProjectContext";
 import SortTasksDropdown from "@/app/components/tasks/sortTasksDropdown";
 import TaskCard from "@/app/components/tasks/taskCard";
 import TaskInfoModal from "@/app/components/tasks/taskInfoModal";
@@ -47,8 +46,7 @@ export default function Tasks() {
   const searchParams = useSearchParams();
   const projectId = searchParams.get("project");
  
-  const { user } = useAuth();
-  const { selectedProject } = useProjects(user);
+  const { user, selectedProject } = useProjectContext();
   const { tasks, loading, refetch } = useTasks(projectId);
   const { takeTask, updateStatus } = useTaskActions(user, refetch);
   const { editTask, deleteTask } = useModifyTasks(refetch);
