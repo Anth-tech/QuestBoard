@@ -103,7 +103,7 @@ export default function NavBar() {
           <Link href={selectedProject ? `/discussions?project=${selectedProject?.id}` : "/discussions"} style={styles.link}>
             Discussion Boards
           </Link>
-          <Link href={selectedProject ? `/teams?project=${selectedProject?.id}` : "/teams</nav>"} style={styles.link}>
+          <Link href={selectedProject ? `/teams?project=${selectedProject.id}` : "/teams"} style={styles.link}>
             Teams
           </Link>
         </nav>
