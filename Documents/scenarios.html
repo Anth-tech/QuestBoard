@@ -42,10 +42,9 @@
 					<br>
 					<strong>Description:</strong>
 					<p>
-							Any user who is designated as the project manager of the relevant project, or another role granted
-						sufficient permissions, is able to see the "Create Task" button. Upon button press a form is presented 
-						with the fields necessary for task creation: task name, description, priority level, completion state, 
-						and initial team members. The task name is the only field that is an absolute requirment. When the user
+							Any user who is designated as the project manager of the relevant project is able to see the "Create Task" button. 
+						Upon button press a form is presented with the fields necessary for task creation: task name, description, priority level, 
+						completion state, and initial team members. The task name is the only field that is an absolute requirment. When the user
 						submits the form, if the task name field is not blank. a new task is inserted into their database and will 
 						now appear in the dashboard of their project. After the task has been created, user's with valid authority
 						will be able to view and click an options button within the task. They will be able to assign the task 
@@ -62,7 +61,7 @@
 						Clicking on this button will open a menu containing all the information pertaining to the task that the user
 						is able to manipulate. The project manager and users granted the authority to do so can edit all facets of a task,
 						while any user who is assigned to the task will be able to at least view edit the task progress unless this
-						authority has been stripped via a special role. By changing which radio button is selected and submitting the
+						authority has been stripped. By changing which radio button is selected and submitting the
 						form, the user will be able to update the task's progress. This has the potential to fail if the user has the ability
 						to edit multiple fields and provides an invalid entry to one of them.
 					</p>
@@ -73,13 +72,13 @@
 					<br>
 					<strong>Description:</strong>
 					<p>
-							Several team members find a design issue that affects multiple tasks and multiple roles.
+							Several team members find a design issue that affects multiple tasks.
 						One contributor goes ahead and creates a post on the common discussion board explaining the
 						problem and asking for solutions. Other team members then reply with feedback and alternative
 						approaches, allowing the team to plan a solution accordingly.
 
 							For more sensitive topics, the project manager creates a private discussion board, granting
-						access only users with relevant roles to view the post. If a user without permission attempts to
+						access only to specific users to view the post. If a user without permission attempts to
 						view the private board, the system blocks their access and returns them to the dashboard. At the
 						end of discussion, messages can be locked by the project manager, and the system stores the
 						messages for later reference.
@@ -126,13 +125,13 @@
 					<br>
 				</li>
 				<li>
-					<strong>Name: Role Management and Access Control</strong>
+					<strong>Name: Access Control</strong>
 					<br>
 					<strong>Description:</strong>
-					<p>		A project manager navigates to the team management section and assigns a role to the team member,
-						which immediately updates member`s access right within the project. If a role needs to be changed/revoked,
-						the project manager can do it from the same interface and it will cause the team member to lose access to
-						certain parts of the project.
+					<p>		A project manager navigates to the team management section and adds a team member,
+						which allows the member to access the project. If access needs to be changed/revoked,
+						the project manager can do it from the same interface and it will cause the team member to lose access to 
+						the project.
 					</p>
 					<br>
 				</li>
@@ -140,8 +139,8 @@
 					<strong>Name: Organizing Tasks into Folders</strong>
 					<br>
 					<strong>Description:</strong>
-					<p>		A project manager creates a folder and, if needed, restricts access to it for certain roles, and moves tasks into it.
-						Team members that dont have a required role will not be able to see the folder or its contents. Individual acces can be 
+					<p>		A project manager creates a folder and, if needed, restricts access to it for certain users, and moves tasks into it.
+						Team members without access clearance will not be able to see the folder or its contents. Individual acces can be 
 						granted or revoked by the project manager.</p>
 					<br>
 				</li>
