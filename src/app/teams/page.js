@@ -100,6 +100,10 @@ export default function TeamsPage() {
         ) : (
           teams.map((team) => {
             const isOpen = openTeamId === team.id;
+            // Get members for this team
+            const { members: teamMembers = [], loading: teamMembersLoading = false } = useTeamMembers(team.id);
+            const currentUserMember = teamMembers.find(m => m.user_id === user?.id);
+            const isOwner = currentUserMember?.role === "owner";
 
             return (
               <div key={team.id} style={styles.teamWrapper}>
@@ -124,12 +128,12 @@ export default function TeamsPage() {
                         + Invite Member
                       </button>
                     )}
-                    {membersLoading ? (
+                    {teamMembersLoading ? (
                       <p style={{ color: "#9ca3af" }}>Loading members...</p>
-                    ) : members.length === 0 ? (
+                    ) : teamMembers.length === 0 ? (
                       <p style={{ color: "#9ca3af" }}>No members yet.</p>
                     ) : (
-                      members.map((member) => (
+                      teamMembers.map((member) => (
                         <div key={member.profiles?.id || member.user_id} style={styles.memberItem}>
                           <span style={styles.memberName}>
                             {member.profiles?.display_name || member.users?.email || "Unknown User"}
