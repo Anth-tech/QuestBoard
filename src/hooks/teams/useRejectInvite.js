@@ -1,13 +1,35 @@
 import { createClient } from "@/lib/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const supabase = createClient();
+export function useRejectInvite(user) {
+  const [currentUser, setCurrentUser] = useState(user);
 
-export default function RejectInvite(user) {
-    const rejectInvite = async (invite) => {
-        await supabase
-            .from('team_invites')
-            .update({status: 'rejected'})
-            .eq('id', invite.id);
-    };
+  useEffect(() => {
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, [user]);
+
+  const rejectInvite = async (invite) => {
+    if (!currentUser) {
+      console.error("No user logged in");
+      return;
+    }
+
+    const supabase = createClient();
+
+    const { error } = await supabase
+      .from("team_invites")
+      .update({ status: "rejected" })
+      .eq("id", invite.id);
+
+    if (error) {
+      console.error("Error rejecting invite:", error);
+      alert("Error: " + error.message);
+    }
+  };
+
+  return {
+    rejectInvite,
+  };
 }
