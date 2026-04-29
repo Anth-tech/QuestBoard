@@ -37,8 +37,9 @@ export default function useCreateTeam(user) {
     const { data: team, error } = await supabase
       .from("teams")
       .insert([{ name: teamName, owner_id: currentUser.id }])
+      .select()
       .single();
-      
+
     if (error) {
       console.error("Error creating team:", error);
       alert("Error: " + error.message);
