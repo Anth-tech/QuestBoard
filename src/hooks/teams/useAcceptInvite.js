@@ -53,7 +53,6 @@ export function useAcceptInvite(user) {
         {
           project_id: team.project_id,
           user_id: currentUser.id,
-          role: "member",
         },
       ]);
 
