@@ -100,10 +100,15 @@ export default function TeamsPage() {
         ) : (
           teams.map((team) => {
             const isOpen = openTeamId === team.id;
-            // Get members for this team
-            const { members: teamMembers = [], loading: teamMembersLoading = false } = useTeamMembers(team.id);
-            const currentUserMember = teamMembers.find(m => m.user_id === user?.id);
-            const isOwner = currentUserMember?.role === "owner";
+            let isOwner = false;
+            let teamMembers = [];
+            let teamMembersLoading = false;
+            if (isOpen) {
+              teamMembers = members;
+              teamMembersLoading = membersLoading;
+              const currentUserMember = teamMembers.find(m => m.user_id === user?.id);
+              isOwner = currentUserMember?.role === "owner";
+            }
 
             return (
               <div key={team.id} style={styles.teamWrapper}>
