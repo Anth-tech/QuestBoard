@@ -62,11 +62,12 @@ export function useTeamMembers(teamId) {
       .from("team_members")
       .select(
         `
+        user_id,
         role,
         profiles (
-        id, display_name
+          id, display_name
         )
-      `,
+      `
       )
       .eq("team_id", teamId);
 
