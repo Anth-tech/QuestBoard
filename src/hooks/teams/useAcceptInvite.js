@@ -1,23 +1,52 @@
 import { createClient } from "@/lib/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const supabase = createClient();
+export function useAcceptInvite(user) {
+  const [currentUser, setCurrentUser] = useState(user);
 
-export default function AcceptInvite(user) {
-    const acceptInvite = async (invite) => {
-        await supabase
-        .from('team_members')
-        .insert([
-            {
-                team_id: invite.team_id,
-                user_id: user.id,
-                role: 'member'
-            }
-        ]);
+  useEffect(() => {
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, [user]);
 
-        await supabase
-            .from('team_invites')
-            .update({status: 'accepted'})
-            .eq('id', invite.id);
-    };
+  const acceptInvite = async (invite) => {
+    if (!currentUser) {
+      console.error("No user logged in");
+      return;
+    }
+
+    const supabase = createClient();
+
+    // Add user to team members
+    const { error: memberError } = await supabase
+      .from("team_members")
+      .insert([
+        {
+          team_id: invite.team_id,
+          user_id: currentUser.id,
+          role: "member"
+        }
+      ]);
+
+    if (memberError) {
+      console.error("Error adding member:", memberError);
+      alert("Error: " + memberError.message);
+      return;
+    }
+
+    // Update invite status
+    const { error: updateError } = await supabase
+      .from("team_invites")
+      .update({ status: "accepted" })
+      .eq("id", invite.id);
+
+    if (updateError) {
+      console.error("Error updating invite:", updateError);
+    }
+  };
+
+  return {
+    acceptInvite,
+  };
 }

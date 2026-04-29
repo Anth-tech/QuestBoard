@@ -1,15 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import useCreateTeam  from "@/hooks/teams/useCreateTeam";
+import useCreateTeam from "@/hooks/teams/useCreateTeam";
 import { useTeamList, useTeamMembers } from "@/hooks/teams/useTeamList";
 import { useAuth } from "@/hooks/useAuth";
+import { useInviteMember } from "@/hooks/teams/useInviteMember";
+import { useAcceptInvite } from "@/hooks/teams/useAcceptInvite";
+import { useRejectInvite } from "@/hooks/teams/useRejectInvite";
+import { usePendingInvites } from "@/hooks/teams/usePendingInvites";
 import CreateTeamModal from "@/app/components/teams/createTeamModal";
+import InviteMemberModal from "@/app/components/teams/inviteMemberModal";
 
 export default function TeamsPage() {
   const { user } = useAuth();
   const { teams, loading, refetch } = useTeamList(user);
   const createTeam = useCreateTeam(user);
+  const { invites, loading: invitesLoading, refetch: refetchInvites } = usePendingInvites(user);
+  const acceptInvite = useAcceptInvite(user);
+  const rejectInvite = useRejectInvite(user);
 
   const [openTeamId, setOpenTeamId] = useState(null);
   const toggleTeam = (teamId) => {
@@ -18,6 +26,23 @@ export default function TeamsPage() {
 
   const selectedTeam = teams.find((t) => t.id === openTeamId) || null;
   const { members, loading: membersLoading } = useTeamMembers(openTeamId);
+  
+  // Get the current user's role in the selected team
+  const currentUserMember = selectedTeam ? members.find(m => m.user_id === user?.id) : null;
+  const isOwner = currentUserMember?.role === "owner";
+  
+  const inviteMember = useInviteMember(openTeamId, user);
+
+  const handleAcceptInvite = async (invite) => {
+    await acceptInvite.acceptInvite(invite);
+    refetchInvites();
+    refetch();
+  };
+
+  const handleRejectInvite = async (invite) => {
+    await rejectInvite.rejectInvite(invite);
+    refetchInvites();
+  };
 
   return (
     <div style={styles.container}>
@@ -37,6 +62,34 @@ export default function TeamsPage() {
           + Create New Team
         </button>
       </div>
+
+      {/* Pending Invites Section */}
+      {invites.length > 0 && (
+        <div style={styles.invitesSection}>
+          <h3 style={styles.sectionTitle}>Pending Invites</h3>
+          {invites.map((invite) => (
+            <div key={invite.id} style={styles.inviteItem}>
+              <span style={styles.inviteTeamName}>
+                Invitation to: {invite.teams?.name}
+              </span>
+              <div style={styles.inviteActions}>
+                <button
+                  style={styles.acceptButton}
+                  onClick={() => handleAcceptInvite(invite)}
+                >
+                  Accept
+                </button>
+                <button
+                  style={styles.rejectButton}
+                  onClick={() => handleRejectInvite(invite)}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div style={styles.teamList}>
         <h3>Your Teams</h3>
@@ -63,14 +116,24 @@ export default function TeamsPage() {
 
                 {isOpen && (
                   <div style={styles.teamContent}>
+                    {isOwner && (
+                      <button
+                        style={styles.inviteButton}
+                        onClick={() => inviteMember.setShowModal(true)}
+                      >
+                        + Invite Member
+                      </button>
+                    )}
                     {membersLoading ? (
                       <p style={{ color: "#9ca3af" }}>Loading members...</p>
                     ) : members.length === 0 ? (
                       <p style={{ color: "#9ca3af" }}>No members yet.</p>
                     ) : (
                       members.map((member) => (
-                        <div key={member.profiles.id} style={styles.memberItem}>
-                          <span style={styles.memberName}>{member.profiles.display_name}</span>
+                        <div key={member.profiles?.id || member.user_id} style={styles.memberItem}>
+                          <span style={styles.memberName}>
+                            {member.profiles?.display_name || member.users?.email || "Unknown User"}
+                          </span>
                           <span style={styles.memberRole}>{member.role}</span>
                         </div>
                       ))
@@ -89,6 +152,15 @@ export default function TeamsPage() {
         teamName={createTeam.teamName}
         setTeamName={createTeam.setTeamName}
         handleCreateTeam={createTeam.handleCreateTeam}
+      />
+
+      <InviteMemberModal
+        showModal={inviteMember.showModal}
+        setShowModal={inviteMember.setShowModal}
+        email={inviteMember.email}
+        setEmail={inviteMember.setEmail}
+        sendInvite={inviteMember.sendInvite}
+        loading={inviteMember.loading}
       />
     </div>
   );
@@ -161,5 +233,62 @@ const styles = {
     color: "#6b7280",
     fontSize: "14px",
     textTransform: "capitalize",
+  },
+  invitesSection: {
+    marginBottom: "20px",
+    padding: "15px",
+    backgroundColor: "#fef3c7",
+    borderRadius: "6px",
+    border: "1px solid #f59e0b",
+  },
+  sectionTitle: {
+    color: "#92400e",
+    marginBottom: "10px",
+    fontSize: "16px",
+  },
+  inviteItem: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "10px",
+    backgroundColor: "white",
+    borderRadius: "4px",
+    marginBottom: "8px",
+  },
+  inviteTeamName: {
+    color: "#374151",
+    fontWeight: "500",
+  },
+  inviteActions: {
+    display: "flex",
+    gap: "8px",
+  },
+  acceptButton: {
+    padding: "6px 12px",
+    backgroundColor: "#10b981",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+  },
+  rejectButton: {
+    padding: "6px 12px",
+    backgroundColor: "#ef4444",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+  },
+  inviteButton: {
+    padding: "8px 16px",
+    backgroundColor: "#2563eb",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "14px",
+    marginBottom: "10px",
   },
 };
