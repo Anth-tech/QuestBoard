@@ -34,31 +34,6 @@ export function useAcceptInvite(user) {
       alert("Error: " + memberError.message);
       return;
     }
-    
-    //add the user to the project
-    const { data: team, error: teamError } = await supabase
-      .from("teams")
-      .select("project_id")
-      .eq("id", invite.team_id)
-      .single();
-
-    if (teamError || !team?.project_id) {
-      console.error("Error fetching team project:", teamError);
-      return;
-    }
-
-    const { error: projectMemberError } = await supabase
-      .from("project_members")
-      .insert([
-        {
-          project_id: team.project_id,
-          user_id: currentUser.id,
-        },
-      ]);
-
-    if (projectMemberError) {
-      console.error("Error adding to project:", projectMemberError);
-    }
 
     // Update invite status
     const { error: updateError } = await supabase
