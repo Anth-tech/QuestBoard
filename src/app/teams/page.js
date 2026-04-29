@@ -8,13 +8,16 @@ import { useInviteMember } from "@/hooks/teams/useInviteMember";
 import { useAcceptInvite } from "@/hooks/teams/useAcceptInvite";
 import { useRejectInvite } from "@/hooks/teams/useRejectInvite";
 import { usePendingInvites } from "@/hooks/teams/usePendingInvites";
+import { useSearchParams } from "next/navigation";
 import CreateTeamModal from "@/app/components/teams/createTeamModal";
 import InviteMemberModal from "@/app/components/teams/inviteMemberModal";
 
 export default function TeamsPage() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
+  const project = searchParams.get("project");
   const { teams, loading, refetch } = useTeamList(user);
-  const createTeam = useCreateTeam(user);
+  const createTeam = useCreateTeam(user,project);
   const { invites, loading: invitesLoading, refetch: refetchInvites } = usePendingInvites(user);
   const acceptInvite = useAcceptInvite(user);
   const rejectInvite = useRejectInvite(user);

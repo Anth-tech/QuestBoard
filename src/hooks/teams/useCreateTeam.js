@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/client";
 import { useState, useEffect } from "react";
 
-export default function useCreateTeam(user) {
+export default function useCreateTeam(user, project) {
   const [showModal, setShowModal] = useState(false);
   const [teamName, setTeamName] = useState("");
   const [currentUser, setCurrentUser] = useState(user);
@@ -36,7 +36,7 @@ export default function useCreateTeam(user) {
 
     const { data: team, error } = await supabase
       .from("teams")
-      .insert([{ name: teamName, owner_id: currentUser.id }])
+      .insert([{ name: teamName, owner_id: currentUser.id, project_id: project }])
       .select()
       .single();
 
