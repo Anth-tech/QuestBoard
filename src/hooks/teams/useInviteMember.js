@@ -15,65 +15,54 @@ export function useInviteMember(teamId, user) {
     }
   }, [user]);
 
-  const sendInvite = async () => {
-    if (!email || !teamId || !currentUser) {
-      console.error("Missing email, teamId, or user");
-      return;
-    }
+const sendInvite = async () => {
+  if (!email || !teamId || !currentUser) {
+    console.error("Missing email, teamId, or user");
+    return;
+  }
 
-    setLoading(true);
-    
-    // First, find the user by email
-    const { data: userData, error: userError } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("email", email)
-      .single();
+  setLoading(true);
 
-    if (userError || !userData) {
-      console.error("User not found with that email");
-      alert("No user found with that email");
-      setLoading(false);
-      return;
-    }
+  const normalizedEmail = email.toLowerCase();
 
-    // Check if user is already a member
-    const { data: existingMember } = await supabase
-      .from("team_members")
-      .select("id")
-      .eq("team_id", teamId)
-      .eq("user_id", userData.id)
-      .single();
+  // Check if already invited
+  const { data: existingInvite } = await supabase
+    .from("team_invites")
+    .select("id")
+    .eq("team_id", teamId)
+    .eq("email", normalizedEmail)
+    .eq("status", "pending")
+    .maybeSingle();
 
-    if (existingMember) {
-      alert("User is already a member of this team");
-      setLoading(false);
-      return;
-    }
-
-    // Create the invite
-    const { error } = await supabase
-      .from("team_invites")
-      .insert([
-        {
-          team_id: teamId,
-          user_id: userData.id,
-          invited_by: currentUser.id,
-          status: "pending"
-        }
-      ]);
-
-    if (error) {
-      console.error("Error sending invite:", error);
-      alert("Error: " + error.message);
-    } else {
-      alert("Invite sent!");
-      setEmail("");
-      setShowModal(false);
-    }
-    
+  if (existingInvite) {
+    alert("User already invited");
     setLoading(false);
-  };
+    return;
+  }
+
+  // Create invite (NO profile lookup)
+  const { error } = await supabase
+    .from("team_invites")
+    .insert([
+      {
+        team_id: teamId,
+        email: normalizedEmail,
+        invited_by: currentUser.id,
+        status: "pending",
+      },
+    ]);
+
+  if (error) {
+    console.error("Error sending invite:", error);
+    alert("Error: " + error.message);
+  } else {
+    alert("Invite sent!");
+    setEmail("");
+    setShowModal(false);
+  }
+
+  setLoading(false);
+};
 
   return {
     showModal,

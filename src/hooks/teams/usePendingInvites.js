@@ -8,7 +8,7 @@ export function usePendingInvites(user) {
   const [loading, setLoading] = useState(true);
 
   const fetchInvites = useCallback(async () => {
-    if (!user) {
+    if (!user?.email) {
       setInvites([]);
       setLoading(false);
       return;
@@ -16,10 +16,17 @@ export function usePendingInvites(user) {
 
     setLoading(true);
 
+    const normalizedEmail = user.email.toLowerCase();
+
     const { data, error } = await supabase
       .from("team_invites")
-      .select("id, team_id, status, teams (id, name)")
-      .eq("user_id", user.id)
+      .select(`
+        id,
+        team_id,
+        status,
+        teams (id, name)
+      `)
+      .eq("email", normalizedEmail)
       .eq("status", "pending");
 
     if (!error) {
@@ -35,13 +42,9 @@ export function usePendingInvites(user) {
     fetchInvites();
   }, [fetchInvites]);
 
-  const refetch = () => {
-    fetchInvites();
-  };
-
   return {
     invites,
     loading,
-    refetch,
+    refetch: fetchInvites,
   };
 }
